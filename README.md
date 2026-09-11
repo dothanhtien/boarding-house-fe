@@ -1,5 +1,11 @@
 # Boarding House
 
+[![CI](https://github.com/dothanhtien/boarding-house-fe/actions/workflows/ci.yml/badge.svg)](https://github.com/dothanhtien/boarding-house-fe/actions/workflows/ci.yml)
+![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=next.js&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?logo=tailwindcss&logoColor=white)
+
 Front-end for the Boarding House management system — an admin dashboard for managing boarding house operations, built with **Next.js 16**, **React 19**, **TypeScript**, and **Tailwind CSS v4**.
 
 This project started from the [TailAdmin](https://tailadmin.com) Next.js admin template and has been trimmed down and adapted to the needs of this application.
