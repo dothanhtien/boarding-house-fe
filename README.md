@@ -63,12 +63,14 @@ A Husky `pre-commit` hook runs `npx lint-staged`, which runs `eslint --fix` + `p
 
 ```text
 src/
-├── app/                  # App Router routes
-│   ├── (admin)/          # Authenticated admin dashboard & profile pages
-│   └── (auth)/           # Sign in / sign up pages
-├── components/           # UI and feature components
-├── context/              # React context providers
-├── hooks/                # Custom React hooks
-├── icons/                # SVG icon components
-└── layout/               # App shell (header, sidebar)
+├── app/                    # App Router routes
+│   ├── (admin)/            # Authenticated admin dashboard & profile pages
+│   └── (auth)/             # Sign in / sign up pages
+├── components/             # UI and feature components
+├── context/                # React context providers
+├── features/               # API calls grouped by feature (src/features/<feature>/api.ts)
+├── hooks/                  # Custom React hooks
+├── icons/                  # SVG icon components
+├── layout/                 # App shell (header, sidebar)
+└── lib/                    # Shared client-side utilities (e.g. the axios instance)
 ```
