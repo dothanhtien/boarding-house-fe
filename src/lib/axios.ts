@@ -16,6 +16,24 @@ type ProblemDetails = {
   errors?: Record<string, string[]>;
 };
 
+// Envelope the backend wraps every successful response in. Callers type
+// `api.get<T>(...)`/`api.post<T>(...)` with the unwrapped payload type `T` —
+// the response interceptor below strips this envelope before it reaches them.
+type ApiEnvelope<T> = {
+  success: boolean;
+  data: T;
+  message: string | null;
+};
+
+function isApiEnvelope(body: unknown): body is ApiEnvelope<unknown> {
+  return (
+    typeof body === "object" &&
+    body !== null &&
+    "success" in body &&
+    "data" in body
+  );
+}
+
 const BASE_API_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
 
 // Reject non-HTTPS API URLs in production; http:// (e.g. http://localhost:8080)
@@ -37,7 +55,12 @@ export const api = axios.create({
 });
 
 api.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    if (isApiEnvelope(res.data)) {
+      res.data = res.data.data;
+    }
+    return res;
+  },
   (error: AxiosError<ProblemDetails>) => {
     const data = error.response?.data;
     const firstFieldMessage = data?.errors

@@ -6,17 +6,17 @@ import { EyeCloseIcon, EyeIcon } from "@/icons";
 import type { ApiError } from "@/lib/axios";
 import Link from "next/link";
 import React, { useState } from "react";
-import { login } from "../api";
 import { useRouter } from "next/navigation";
+import { useLogin } from "../mutations";
 
 export default function SignInForm() {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+  const loginMutation = useLogin();
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
 
@@ -33,18 +33,18 @@ export default function SignInForm() {
       return;
     }
 
-    setIsSubmitting(true);
-
-    try {
-      await login({ email, password });
-      router.replace("/");
-    } catch (err) {
-      setError(
-        (err as ApiError).message ?? "An error occurred when signing in",
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
+    loginMutation.mutate(
+      { email, password },
+      {
+        onSuccess: () => {
+          setLoginData({ email: "", password: "" });
+          router.replace("/");
+        },
+        onError: (error: ApiError) => {
+          setError(error.message ?? "An error occurred when signing in");
+        },
+      },
+    );
   }
 
   return (
@@ -114,8 +114,12 @@ export default function SignInForm() {
                   </Link>
                 </div>
                 <div>
-                  <Button className="w-full" size="sm" disabled={isSubmitting}>
-                    {isSubmitting ? "Signing in..." : "Sign in"}
+                  <Button
+                    className="w-full"
+                    size="sm"
+                    disabled={loginMutation.isPending}
+                  >
+                    {loginMutation.isPending ? "Signing in..." : "Sign in"}
                   </Button>
                 </div>
               </div>

@@ -1,11 +1,14 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SignInForm from "./SignInForm";
-import { login } from "../api";
+import { authApi } from "../api";
 
 vi.mock("../api", () => ({
-  login: vi.fn(),
+  authApi: {
+    login: vi.fn(),
+  },
 }));
 
 const replaceMock = vi.fn();
@@ -14,7 +17,19 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ replace: replaceMock }),
 }));
 
-const loginMock = vi.mocked(login);
+const loginMock = vi.mocked(authApi.login);
+
+function renderSignInForm() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+  });
+
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <SignInForm />
+    </QueryClientProvider>,
+  );
+}
 
 async function fillAndSubmit(email?: string, password?: string) {
   const user = userEvent.setup();
@@ -39,7 +54,7 @@ describe("SignInForm", () => {
   });
 
   it("renders email and password fields", () => {
-    render(<SignInForm />);
+    renderSignInForm();
 
     expect(screen.getByPlaceholderText("info@gmail.com")).toBeInTheDocument();
     expect(
@@ -52,7 +67,7 @@ describe("SignInForm", () => {
 
   it("toggles password visibility", async () => {
     const user = userEvent.setup();
-    render(<SignInForm />);
+    renderSignInForm();
 
     const passwordInput = screen.getByPlaceholderText(
       "Enter your password",
@@ -66,7 +81,7 @@ describe("SignInForm", () => {
   });
 
   it("shows an error and does not call login when email is missing", async () => {
-    render(<SignInForm />);
+    renderSignInForm();
 
     await fillAndSubmit(undefined, "password123");
 
@@ -75,7 +90,7 @@ describe("SignInForm", () => {
   });
 
   it("shows an error and does not call login when password is missing", async () => {
-    render(<SignInForm />);
+    renderSignInForm();
 
     await fillAndSubmit("user@example.com", undefined);
 
@@ -96,7 +111,7 @@ describe("SignInForm", () => {
       updatedAt: "",
     });
 
-    render(<SignInForm />);
+    renderSignInForm();
 
     await fillAndSubmit("  user@example.com  ", "  password123  ");
 
@@ -115,7 +130,7 @@ describe("SignInForm", () => {
       message: "Invalid credentials",
     });
 
-    render(<SignInForm />);
+    renderSignInForm();
 
     await fillAndSubmit("user@example.com", "wrongpassword");
 
@@ -126,7 +141,7 @@ describe("SignInForm", () => {
   it("shows a fallback error message when login fails without a message", async () => {
     loginMock.mockRejectedValueOnce({});
 
-    render(<SignInForm />);
+    renderSignInForm();
 
     await fillAndSubmit("user@example.com", "wrongpassword");
 
