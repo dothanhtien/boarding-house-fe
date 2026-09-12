@@ -18,6 +18,18 @@ type ProblemDetails = {
 
 const BASE_API_URL = process.env.NEXT_PUBLIC_BASE_API_URL;
 
+// Reject non-HTTPS API URLs in production; http:// (e.g. http://localhost:8080)
+// stays allowed in development.
+if (
+  process.env.NODE_ENV === "production" &&
+  BASE_API_URL &&
+  !BASE_API_URL.startsWith("https://")
+) {
+  throw new Error(
+    `NEXT_PUBLIC_BASE_API_URL must use https:// in production (got "${BASE_API_URL}").`,
+  );
+}
+
 export const api = axios.create({
   baseURL: BASE_API_URL,
   withCredentials: true,
