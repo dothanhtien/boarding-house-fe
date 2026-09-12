@@ -1,12 +1,16 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
+import { useLogout } from "@/features/auth/mutations";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const [signOutError, setSignOutError] = useState<string | null>(null);
+  const router = useRouter();
+  const logoutMutation = useLogout();
 
   function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.stopPropagation();
@@ -16,6 +20,19 @@ export default function UserDropdown() {
   function closeDropdown() {
     setIsOpen(false);
   }
+
+  function handleSignOut() {
+    setSignOutError(null);
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        router.replace("/signin");
+      },
+      onError: () => {
+        setSignOutError("Sign out failed. Please try again.");
+      },
+    });
+  }
+
   return (
     <div className="relative">
       <button
@@ -96,9 +113,12 @@ export default function UserDropdown() {
             </DropdownItem>
           </li>
         </ul>
-        <Link
-          href="/signin"
-          className="group text-theme-sm mt-3 flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+        <DropdownItem
+          onItemClick={closeDropdown}
+          onClick={handleSignOut}
+          tag="button"
+          disabled={logoutMutation.isPending}
+          className="group text-theme-sm mt-3 flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-60 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
         >
           <svg
             className="fill-gray-500 group-hover:fill-gray-700 dark:group-hover:fill-gray-300"
@@ -115,8 +135,11 @@ export default function UserDropdown() {
               fill=""
             />
           </svg>
-          Sign out
-        </Link>
+          {logoutMutation.isPending ? "Signing out..." : "Sign out"}
+        </DropdownItem>
+        {signOutError && (
+          <p className="text-theme-xs text-error-500 mt-2">{signOutError}</p>
+        )}
       </Dropdown>
     </div>
   );
