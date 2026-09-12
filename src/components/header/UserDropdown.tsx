@@ -25,6 +25,7 @@ export default function UserDropdown() {
     setSignOutError(null);
     logoutMutation.mutate(undefined, {
       onSuccess: () => {
+        closeDropdown();
         router.replace("/signin");
       },
       onError: () => {
@@ -114,7 +115,6 @@ export default function UserDropdown() {
           </li>
         </ul>
         <DropdownItem
-          onItemClick={closeDropdown}
           onClick={handleSignOut}
           tag="button"
           disabled={logoutMutation.isPending}
