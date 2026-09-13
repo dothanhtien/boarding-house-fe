@@ -6,14 +6,19 @@ import Pagination from "@/components/tables/Pagination";
 import { useUsers } from "@/features/users/queries";
 import { UsersFilter } from "@/features/users/components/UsersFilter";
 import { UsersTable } from "@/features/users/components/UsersTable";
+import { useModal } from "@/hooks/useModal";
+import Button from "@/components/ui/button/Button";
+import { PlusIcon } from "@/icons";
+import { CreateUserModal } from "./CreateUserModal";
 
-const PAGE_SIZE = 3;
+const PAGE_SIZE = 20;
 
 export function UsersView() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<string | undefined>(undefined);
   const [sortDescending, setSortDescending] = useState(false);
+  const { isOpen, openModal, closeModal } = useModal();
 
   function handleSortChange(field: string) {
     if (sortBy === field) {
@@ -44,12 +49,18 @@ export function UsersView() {
 
       <div className="rounded-2xl border border-gray-200 bg-white p-5 lg:p-6 dark:border-gray-800 dark:bg-white/3">
         <div className="space-y-5">
-          <UsersFilter
-            onSearchChange={(value) => {
-              setSearch(value);
-              setPage(1);
-            }}
-          />
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <UsersFilter
+              onSearchChange={(value) => {
+                setSearch(value);
+                setPage(1);
+              }}
+            />
+
+            <Button size="sm" startIcon={<PlusIcon />} onClick={openModal}>
+              Add user
+            </Button>
+          </div>
 
           {error && <p className="text-error-500 text-sm">{error.message}</p>}
 
@@ -72,6 +83,8 @@ export function UsersView() {
           )}
         </div>
       </div>
+
+      <CreateUserModal isOpen={isOpen} onClose={closeModal} />
     </div>
   );
 }

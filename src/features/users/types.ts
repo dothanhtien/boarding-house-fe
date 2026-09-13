@@ -7,7 +7,7 @@ export type User = {
   lastLoginAt: string | null;
   isActive: boolean;
   createdAt: string;
-  updatedAt: string;
+  updatedAt: string | null;
 };
 
 export type GetUsersParams = {
@@ -25,4 +25,12 @@ export type GetUsersResponse = {
   pageSize: number;
   totalItems: number;
   totalPages: number;
+};
+
+export type CreateUserPayload = {
+  email: string;
+  fullName: string;
+  phone?: string | null;
+  password: string;
+  passwordConfirmation: string;
 };
