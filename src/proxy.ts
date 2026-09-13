@@ -13,7 +13,7 @@ export function proxy(req: NextRequest) {
 
   if (!hasMaker && !isPublicOnlyPath) {
     const signInUrl = new URL("/signin", req.url);
-    signInUrl.searchParams.set("redirect", pathname);
+    signInUrl.searchParams.set("redirect", pathname + req.nextUrl.search);
     return NextResponse.redirect(signInUrl);
   }
 

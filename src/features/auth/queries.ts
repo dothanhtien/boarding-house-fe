@@ -11,7 +11,8 @@ export function useMe() {
     queryKey: authKeys.me(),
     queryFn: authApi.getMe,
     retry: false,
-    staleTime: Infinity,
+    staleTime: 60 * 1000,
+    refetchOnMount: "always",
     refetchOnWindowFocus: false,
   });
 }

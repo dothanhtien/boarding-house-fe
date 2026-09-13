@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { useSidebar } from "@/context/SidebarContext";
 import AppHeader from "@/layout/AppHeader";
@@ -21,20 +21,22 @@ export default function AdminLayout({
       : "lg:ml-[90px]";
 
   return (
-    <ProtectedRoute>
-      <div className="min-h-screen xl:flex">
-        <AppSidebar />
-        <Backdrop />
+    <Suspense>
+      <ProtectedRoute>
+        <div className="min-h-screen xl:flex">
+          <AppSidebar />
+          <Backdrop />
 
-        <div
-          className={`flex-1 transition-all duration-300 ease-in-out ${mainContentMargin}`}
-        >
-          <AppHeader />
-          <div className="mx-auto max-w-(--breakpoint-2xl) p-4 md:p-6">
-            {children}
+          <div
+            className={`flex-1 transition-all duration-300 ease-in-out ${mainContentMargin}`}
+          >
+            <AppHeader />
+            <div className="mx-auto max-w-(--breakpoint-2xl) p-4 md:p-6">
+              {children}
+            </div>
           </div>
         </div>
-      </div>
-    </ProtectedRoute>
+      </ProtectedRoute>
+    </Suspense>
   );
 }

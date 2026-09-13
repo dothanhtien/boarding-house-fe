@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { clearSessionMarker, setSessionMarker } from "@/utils/sessionMarker";
 import { useMe } from "@/features/auth/queries";
 
@@ -8,22 +8,27 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { data: user, isLoading, isError } = useMe();
+  const { data: user, isLoading, isFetching, isError } = useMe();
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const isChecking = isLoading || isFetching;
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isChecking) return;
 
     if (isError || !user) {
       clearSessionMarker();
-      router.replace(`/signin?redirect=${encodeURIComponent(pathname)}`);
+      const search = searchParams.toString();
+      const redirectTarget = search ? `${pathname}?${search}` : pathname;
+      router.replace(`/signin?redirect=${encodeURIComponent(redirectTarget)}`);
     } else {
       setSessionMarker();
     }
-  }, [isLoading, isError, user, router, pathname]);
+  }, [isChecking, isError, user, router, pathname, searchParams]);
 
-  if (isLoading || !user) {
+  if (isChecking || !user) {
     return (
       <div className="flex h-screen items-center justify-center">
         <span className="text-gray-500 dark:text-gray-400">Loading...</span>
