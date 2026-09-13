@@ -4,11 +4,13 @@ export const createUserSchema = z
   .object({
     email: z
       .string()
+      .trim()
       .min(1, "Email is required")
       .email("Email is invalid")
       .max(255, "Email exceeds 255 characters"),
     fullName: z
       .string()
+      .trim()
       .min(1, "Full name is required")
       .max(255, "Full name exceeds 255 characters"),
     phone: z.string().max(20, "Phone exceeds 20 characters"),

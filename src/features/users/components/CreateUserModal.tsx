@@ -38,6 +38,15 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
   });
 
   function handleClose() {
+    if (createUserMutation.isPending) return;
+
+    reset(DEFAULT_VALUES);
+    setGeneralError(null);
+    createUserMutation.reset();
+    onClose();
+  }
+
+  function handleCreateSuccess() {
     reset(DEFAULT_VALUES);
     setGeneralError(null);
     createUserMutation.reset();
@@ -56,7 +65,7 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
         passwordConfirmation: values.passwordConfirmation,
       },
       {
-        onSuccess: handleClose,
+        onSuccess: handleCreateSuccess,
         onError: (error: ApiError) => {
           if (error.errors) {
             for (const [field, messages] of Object.entries(error.errors)) {
@@ -90,10 +99,11 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
           )}
 
           <div>
-            <Label>
-              Full name <span className="text-error-500">*</span>
+            <Label htmlFor="fullName">
+              Full name <span className="text-red-500">*</span>
             </Label>
             <Input
+              id="fullName"
               type="text"
               error={!!errors.fullName}
               hint={errors.fullName?.message}
@@ -102,10 +112,11 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
           </div>
 
           <div>
-            <Label>
-              Email <span className="text-error-500">*</span>
+            <Label htmlFor="email">
+              Email <span className="text-red-500">*</span>
             </Label>
             <Input
+              id="email"
               type="email"
               error={!!errors.email}
               hint={errors.email?.message}
@@ -114,8 +125,9 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
           </div>
 
           <div>
-            <Label>Phone</Label>
+            <Label htmlFor="phone">Phone</Label>
             <Input
+              id="phone"
               type="text"
               error={!!errors.phone}
               hint={errors.phone?.message}
@@ -124,10 +136,11 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
           </div>
 
           <div>
-            <Label>
-              Password <span className="text-error-500">*</span>
+            <Label htmlFor="password">
+              Password <span className="text-red-500">*</span>
             </Label>
             <Input
+              id="password"
               type="password"
               error={!!errors.password}
               hint={errors.password?.message}
@@ -136,10 +149,11 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
           </div>
 
           <div>
-            <Label>
-              Confirm password <span className="text-error-500">*</span>
+            <Label htmlFor="passwordConfirmation">
+              Confirm password <span className="text-red-500">*</span>
             </Label>
             <Input
+              id="passwordConfirmation"
               type="password"
               error={!!errors.passwordConfirmation}
               hint={errors.passwordConfirmation?.message}
