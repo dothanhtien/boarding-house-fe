@@ -4,7 +4,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
-import { ChevronDownIcon, GridIcon, HorizontaLDots } from "../icons/index";
+import {
+  ChevronDownIcon,
+  GridIcon,
+  HorizontaLDots,
+  UserIcon,
+} from "../icons/index";
 
 type NavItem = {
   name: string;
@@ -18,6 +23,11 @@ const navItems: NavItem[] = [
     icon: <GridIcon />,
     name: "Dashboard",
     path: "/",
+  },
+  {
+    icon: <UserIcon />,
+    name: "Users",
+    path: "/users",
   },
 ];
 
