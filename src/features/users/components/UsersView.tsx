@@ -7,7 +7,7 @@ import { useUsers } from "@/features/users/queries";
 import { UsersFilter } from "@/features/users/components/UsersFilter";
 import { UsersTable } from "@/features/users/components/UsersTable";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 3;
 
 export function UsersView() {
   const [page, setPage] = useState(1);
@@ -32,6 +32,11 @@ export function UsersView() {
     sortBy,
     sortDescending,
   });
+
+  function handlePageChange(nextPage: number) {
+    const totalPages = data?.totalPages ?? 1;
+    setPage(Math.min(Math.max(nextPage, 1), totalPages));
+  }
 
   return (
     <div>
@@ -62,7 +67,7 @@ export function UsersView() {
             <Pagination
               currentPage={data.page}
               totalPages={data.totalPages}
-              onPageChange={setPage}
+              onPageChange={handlePageChange}
             />
           )}
         </div>
