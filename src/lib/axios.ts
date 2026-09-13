@@ -1,4 +1,4 @@
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
 
 export type ApiError = {
   status: number | null;
@@ -54,6 +54,34 @@ export const api = axios.create({
   timeout: 30_000,
 });
 
+const refreshApi = axios.create({
+  baseURL: BASE_API_URL,
+  withCredentials: true,
+  timeout: 30_000,
+});
+
+const SKIP_REFRESH_PATHS = [
+  "/auth/login",
+  "/auth/logout",
+  "/auth/refresh-token",
+];
+
+type RetriableConfig = AxiosRequestConfig & { _retried?: boolean };
+
+let refreshPromise: Promise<boolean> | null = null;
+
+function refreshAccessToken(): Promise<boolean> {
+  refreshPromise ??= refreshApi
+    .post("/auth/refresh-token")
+    .then(() => true)
+    .catch(() => false)
+    .finally(() => {
+      refreshPromise = null;
+    });
+
+  return refreshPromise;
+}
+
 api.interceptors.response.use(
   (res) => {
     if (isApiEnvelope(res.data)) {
@@ -61,7 +89,22 @@ api.interceptors.response.use(
     }
     return res;
   },
-  (error: AxiosError<ProblemDetails>) => {
+  async (error: AxiosError<ProblemDetails>) => {
+    const config = error.config as RetriableConfig | undefined;
+    const shouldTryRefresh =
+      error.response?.status === 401 &&
+      config &&
+      !config._retried &&
+      !SKIP_REFRESH_PATHS.some((p) => config.url?.startsWith(p));
+
+    if (shouldTryRefresh) {
+      config._retried = true;
+      const refreshed = await refreshAccessToken();
+      if (refreshed) {
+        return api(config);
+      }
+    }
+
     const data = error.response?.data;
     const firstFieldMessage = data?.errors
       ? Object.values(data.errors)[0]?.[0]
