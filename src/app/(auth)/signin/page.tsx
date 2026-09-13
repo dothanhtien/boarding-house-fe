@@ -1,5 +1,6 @@
-import SignInForm from "@/features/auth/components/SignInForm";
+import { Suspense } from "react";
 import { Metadata } from "next";
+import SignInForm from "@/features/auth/components/SignInForm";
 
 export const metadata: Metadata = {
   title: "Sign In | Boarding House",
@@ -8,5 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default function SignIn() {
-  return <SignInForm />;
+  return (
+    <Suspense>
+      <SignInForm />
+    </Suspense>
+  );
 }

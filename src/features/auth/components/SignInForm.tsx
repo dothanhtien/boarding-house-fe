@@ -1,12 +1,14 @@
 "use client";
+
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import type { ApiError } from "@/lib/axios";
-import Link from "next/link";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { getSafeRedirect } from "@/utils/redirect";
 import { useLogin } from "../mutations";
 
 export default function SignInForm() {
@@ -14,6 +16,7 @@ export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const loginMutation = useLogin();
 
   function handleSubmit(e: React.FormEvent) {
@@ -38,7 +41,7 @@ export default function SignInForm() {
       {
         onSuccess: () => {
           setLoginData({ email: "", password: "" });
-          router.replace("/");
+          router.replace(getSafeRedirect(searchParams.get("redirect")));
         },
         onError: (error: ApiError) => {
           setError(error.message ?? "An error occurred when signing in");

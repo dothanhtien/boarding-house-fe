@@ -12,9 +12,11 @@ vi.mock("../api", () => ({
 }));
 
 const replaceMock = vi.fn();
+const searchParams = new URLSearchParams();
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ replace: replaceMock }),
+  useSearchParams: () => searchParams,
 }));
 
 const loginMock = vi.mocked(authApi.login);
@@ -51,6 +53,9 @@ describe("SignInForm", () => {
   beforeEach(() => {
     loginMock.mockReset();
     replaceMock.mockReset();
+    for (const key of [...searchParams.keys()]) {
+      searchParams.delete(key);
+    }
   });
 
   it("renders email and password fields", () => {
@@ -122,6 +127,27 @@ describe("SignInForm", () => {
       });
     });
     await waitFor(() => expect(replaceMock).toHaveBeenCalledWith("/"));
+  });
+
+  it("redirects to the `redirect` query param on success when present", async () => {
+    searchParams.set("redirect", "/profile");
+    loginMock.mockResolvedValueOnce({
+      id: "1",
+      email: "user@example.com",
+      emailVerifiedAt: null,
+      phone: null,
+      fullName: "Test User",
+      lastLoginAt: null,
+      isActive: true,
+      createdAt: "",
+      updatedAt: "",
+    });
+
+    renderSignInForm();
+
+    await fillAndSubmit("user@example.com", "password123");
+
+    await waitFor(() => expect(replaceMock).toHaveBeenCalledWith("/profile"));
   });
 
   it("shows the API error message when login fails", async () => {
