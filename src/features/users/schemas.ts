@@ -13,7 +13,14 @@ export const createUserSchema = z
       .trim()
       .min(1, "Full name is required")
       .max(255, "Full name exceeds 255 characters"),
-    phone: z.string().max(20, "Phone exceeds 20 characters"),
+    phone: z
+      .string()
+      .trim()
+      .max(20, "Phone exceeds 20 characters")
+      .regex(
+        /^(\+?\d+)?$/,
+        "Phone must contain only digits, optionally starting with +",
+      ),
     password: z
       .string()
       .min(1, "Password is required")
@@ -29,3 +36,28 @@ export const createUserSchema = z
   });
 
 export type CreateUserFormValues = z.infer<typeof createUserSchema>;
+
+export const updateUserSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, "Email is required")
+    .email("Email is invalid")
+    .max(255, "Email exceeds 255 characters"),
+  fullName: z
+    .string()
+    .trim()
+    .min(1, "Full name is required")
+    .max(255, "Full name exceeds 255 characters"),
+  phone: z
+    .string()
+    .trim()
+    .max(20, "Phone exceeds 20 characters")
+    .regex(
+      /^(\+?\d+)?$/,
+      "Phone must contain only digits, optionally starting with +",
+    ),
+  isActive: z.boolean(),
+});
+
+export type UpdateUserFormValues = z.infer<typeof updateUserSchema>;

@@ -6,13 +6,17 @@ export const authKeys = {
   me: () => [...authKeys.all, "me"] as const,
 };
 
-export function useMe() {
+interface UseMeOptions {
+  refetchOnMount?: boolean | "always";
+}
+
+export function useMe(options: UseMeOptions = {}) {
   return useQuery({
     queryKey: authKeys.me(),
     queryFn: authApi.getMe,
     retry: false,
     staleTime: 60 * 1000,
-    refetchOnMount: "always",
+    refetchOnMount: options.refetchOnMount ?? true,
     refetchOnWindowFocus: false,
   });
 }

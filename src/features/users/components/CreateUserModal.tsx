@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import { Modal } from "@/components/ui/modal";
 import Form from "@/components/form/Form";
 import { CreateUserFormValues, createUserSchema } from "../schemas";
@@ -35,6 +36,7 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
   } = useForm<CreateUserFormValues>({
     resolver: zodResolver(createUserSchema),
     defaultValues: DEFAULT_VALUES,
+    mode: "all",
   });
 
   function handleClose() {
@@ -47,10 +49,8 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
   }
 
   function handleCreateSuccess() {
-    reset(DEFAULT_VALUES);
-    setGeneralError(null);
-    createUserMutation.reset();
-    onClose();
+    toast.success("User created successfully");
+    handleClose();
   }
 
   function onSubmit(values: CreateUserFormValues) {

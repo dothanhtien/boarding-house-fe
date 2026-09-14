@@ -14,7 +14,7 @@ export type GetUsersParams = {
   search?: string;
   isActive?: boolean;
   sortBy?: string;
-  sortDescending?: boolean;
+  sortOrder?: "desc" | "asc";
   page?: number;
   pageSize?: number;
 };
@@ -34,3 +34,7 @@ export type CreateUserPayload = {
   password: string;
   passwordConfirmation: string;
 };
+
+export type UpdateUserPayload = Partial<
+  Pick<User, "email" | "fullName" | "phone" | "isActive">
+>;

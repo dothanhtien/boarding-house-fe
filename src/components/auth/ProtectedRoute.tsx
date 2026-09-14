@@ -8,7 +8,12 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { data: user, isLoading, isFetching, isError } = useMe();
+  const {
+    data: user,
+    isLoading,
+    isFetching,
+    isError,
+  } = useMe({ refetchOnMount: "always" });
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
