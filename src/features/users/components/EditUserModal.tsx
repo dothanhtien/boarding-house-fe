@@ -151,7 +151,7 @@ export function EditUserModal({ user, onClose }: EditUserModalProps) {
             render={({ field }) => (
               <Switch
                 label="Active"
-                defaultChecked={field.value}
+                checked={field.value}
                 onChange={field.onChange}
               />
             )}
