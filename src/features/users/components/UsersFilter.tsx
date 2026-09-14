@@ -24,7 +24,7 @@ export function UsersFilter({ onSearchChange }: UsersFilterBarProps) {
   }, [searchInput]);
 
   return (
-    <div className="sm:max-w-xs">
+    <div className="w-full sm:max-w-xs">
       <Input
         type="text"
         placeholder="Search by name or email"

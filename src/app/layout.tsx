@@ -1,4 +1,5 @@
 import { Outfit } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 import "flatpickr/dist/flatpickr.css";
 import { SidebarProvider } from "@/context/SidebarContext";
@@ -22,6 +23,7 @@ export default function RootLayout({
             <SidebarProvider>{children}</SidebarProvider>
           </ThemeProvider>
         </QueryProvider>
+        <Toaster richColors position="top-right" closeButton />
       </body>
     </html>
   );

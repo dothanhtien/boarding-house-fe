@@ -9,6 +9,7 @@ import {
 import Badge from "@/components/ui/badge/Badge";
 import type { User } from "@/features/users/types";
 import { formatDate } from "@/utils/date";
+import { PencilIcon, TrashBinIcon } from "@/icons";
 
 interface UsersTableProps {
   users: User[];
@@ -16,8 +17,11 @@ interface UsersTableProps {
   isFetching?: boolean;
   hasError?: boolean;
   sortBy?: string;
-  sortDescending?: boolean;
+  sortOrder?: "asc" | "desc";
   onSortChange: (field: string) => void;
+  onEdit: (user: User) => void;
+  onDelete: (user: User) => void;
+  currentUserId?: string;
 }
 
 interface SortableColumn {
@@ -32,6 +36,7 @@ const columns: SortableColumn[] = [
   { label: "Status" },
   { label: "Last login", field: "lastLoginAt" },
   { label: "Created at", field: "createdAt" },
+  { label: "Actions" },
 ];
 
 export function UsersTable({
@@ -40,8 +45,11 @@ export function UsersTable({
   isFetching = false,
   hasError = false,
   sortBy,
-  sortDescending,
+  sortOrder,
   onSortChange,
+  onEdit,
+  onDelete,
+  currentUserId,
 }: UsersTableProps) {
   return (
     <div className="relative overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -67,7 +75,7 @@ export function UsersTable({
                       >
                         {col.label}
                         {sortBy === col.field && (
-                          <span>{sortDescending ? "↓" : "↑"}</span>
+                          <span>{sortOrder === "desc" ? "↓" : "↑"}</span>
                         )}
                       </button>
                     ) : (
@@ -101,33 +109,69 @@ export function UsersTable({
                 </TableRow>
               )}
 
-              {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell className="text-theme-sm px-5 py-4 text-start font-medium text-gray-800 sm:px-6 dark:text-white/90">
-                    {user.fullName}
-                  </TableCell>
-                  <TableCell className="text-theme-sm px-4 py-3 text-start text-gray-500 dark:text-gray-400">
-                    {user.email}
-                  </TableCell>
-                  <TableCell className="text-theme-sm px-4 py-3 text-start text-gray-500 dark:text-gray-400">
-                    {user.phone ?? "—"}
-                  </TableCell>
-                  <TableCell className="text-theme-sm px-4 py-3 text-start">
-                    <Badge
-                      size="sm"
-                      color={user.isActive ? "success" : "error"}
-                    >
-                      {user.isActive ? "Active" : "Inactive"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-theme-sm px-4 py-3 text-start text-gray-500 dark:text-gray-400">
-                    {formatDate(user.lastLoginAt)}
-                  </TableCell>
-                  <TableCell className="text-theme-sm px-4 py-3 text-start text-gray-500 dark:text-gray-400">
-                    {formatDate(user.createdAt)}
-                  </TableCell>
-                </TableRow>
-              ))}
+              {users.map((user) => {
+                const isSelf = user.id === currentUserId;
+
+                return (
+                  <TableRow key={user.id}>
+                    <TableCell className="text-theme-sm px-5 py-4 text-start font-medium text-gray-800 sm:px-6 dark:text-white/90">
+                      {user.fullName}
+                    </TableCell>
+                    <TableCell className="text-theme-sm px-4 py-3 text-start text-gray-500 dark:text-gray-400">
+                      {user.email}
+                    </TableCell>
+                    <TableCell className="text-theme-sm px-4 py-3 text-start text-gray-500 dark:text-gray-400">
+                      {user.phone ? user.phone : "—"}
+                    </TableCell>
+                    <TableCell className="text-theme-sm px-4 py-3 text-start">
+                      <Badge
+                        size="sm"
+                        color={user.isActive ? "success" : "error"}
+                      >
+                        {user.isActive ? "Active" : "Inactive"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-theme-sm px-4 py-3 text-start text-gray-500 dark:text-gray-400">
+                      {formatDate(user.lastLoginAt)}
+                    </TableCell>
+                    <TableCell className="text-theme-sm px-4 py-3 text-start text-gray-500 dark:text-gray-400">
+                      {formatDate(user.createdAt)}
+                    </TableCell>
+                    <TableCell className="text-theme-sm px-4 py-3 text-start">
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          aria-label="Edit user"
+                          title={
+                            isSelf
+                              ? "You cannot edit your own account"
+                              : undefined
+                          }
+                          disabled={isSelf}
+                          onClick={() => onEdit(user)}
+                          className="hover:text-brand-500 dark:hover:text-brand-500 cursor-pointer text-gray-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-gray-700 dark:text-gray-400 dark:disabled:hover:text-gray-400"
+                        >
+                          <PencilIcon className="h-5 w-5" />
+                        </button>
+                        <button
+                          type="button"
+                          aria-label="Delete user"
+                          title={
+                            isSelf
+                              ? "You cannot delete your own account"
+                              : undefined
+                          }
+                          disabled={isSelf}
+                          onClick={() => onDelete(user)}
+                          className="hover:text-error-500 dark:hover:text-error-500 cursor-pointer text-gray-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-gray-700 dark:text-gray-400 dark:disabled:hover:text-gray-400"
+                        >
+                          <TrashBinIcon className="h-5 w-5" />
+                        </button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>
