@@ -19,8 +19,18 @@ export const ConfirmDeleteDialog: React.FC<ConfirmDeleteDialogProps> = ({
   onClose,
   onConfirm,
 }) => {
+  const handleClose = () => {
+    if (isPending) return;
+    onClose();
+  };
+
   return (
-    <Modal isOpen onClose={onClose} className="m-4 max-w-[400px]">
+    <Modal
+      isOpen
+      onClose={handleClose}
+      closeOnBackdropClick={!isPending}
+      className="m-4 max-w-[400px]"
+    >
       <div className="relative w-full max-w-[400px] rounded-3xl bg-white p-6 lg:p-8 dark:bg-gray-900">
         <h4 className="mb-3 text-xl font-semibold text-gray-800 dark:text-white/90">
           {title}
@@ -35,7 +45,12 @@ export const ConfirmDeleteDialog: React.FC<ConfirmDeleteDialogProps> = ({
         )}
 
         <div className="mt-6 flex items-center justify-end gap-3">
-          <Button type="button" variant="outline" onClick={onClose}>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isPending}
+            onClick={handleClose}
+          >
             Cancel
           </Button>
           <Button

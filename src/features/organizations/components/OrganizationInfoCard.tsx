@@ -132,11 +132,16 @@ function OrganizationInfoEditModal({
     wasOpen.current = isOpen;
   }, [isOpen, organization, reset]);
 
-  function handleClose() {
+  function resetAndClose() {
     setGeneralError(null);
     setWarning(null);
     updateOrganizationMutation.reset();
     onClose();
+  }
+
+  function handleClose() {
+    if (updateOrganizationMutation.isPending) return;
+    resetAndClose();
   }
 
   function onSubmit(values: UpdateOrganizationFormValues) {
@@ -164,7 +169,7 @@ function OrganizationInfoEditModal({
       {
         onSuccess: () => {
           toast.success("Organization updated successfully");
-          handleClose();
+          resetAndClose();
         },
         onError: (error: ApiError) => {
           applyApiFormErrors(
@@ -314,7 +319,12 @@ function OrganizationInfoEditModal({
           />
 
           <div className="mt-2 flex items-center justify-end gap-3">
-            <Button type="button" variant="outline" onClick={handleClose}>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={updateOrganizationMutation.isPending}
+              onClick={handleClose}
+            >
               Cancel
             </Button>
             <Button disabled={updateOrganizationMutation.isPending}>

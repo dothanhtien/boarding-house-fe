@@ -64,15 +64,23 @@ export function UsersTable({
     {
       label: "Actions",
       render: (user) => {
+        const isCurrentUserLoaded = currentUserId !== undefined;
         const isSelf = user.id === currentUserId;
+        const isDisabled = !isCurrentUserLoaded || isSelf;
 
         return (
           <div className="flex items-center gap-3">
             <button
               type="button"
               aria-label="Edit user"
-              title={isSelf ? "You cannot edit your own account" : undefined}
-              disabled={isSelf}
+              title={
+                !isCurrentUserLoaded
+                  ? "Loading current user..."
+                  : isSelf
+                    ? "You cannot edit your own account"
+                    : undefined
+              }
+              disabled={isDisabled}
               onClick={() => onEdit(user)}
               className="hover:text-brand-500 dark:hover:text-brand-500 cursor-pointer text-gray-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-gray-700 dark:text-gray-400 dark:disabled:hover:text-gray-400"
             >
@@ -81,8 +89,14 @@ export function UsersTable({
             <button
               type="button"
               aria-label="Delete user"
-              title={isSelf ? "You cannot delete your own account" : undefined}
-              disabled={isSelf}
+              title={
+                !isCurrentUserLoaded
+                  ? "Loading current user..."
+                  : isSelf
+                    ? "You cannot delete your own account"
+                    : undefined
+              }
+              disabled={isDisabled}
               onClick={() => onDelete(user)}
               className="hover:text-error-500 dark:hover:text-error-500 cursor-pointer text-gray-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-gray-700 dark:text-gray-400 dark:disabled:hover:text-gray-400"
             >

@@ -13,10 +13,14 @@ export function applyApiFormErrors<T extends FieldValues>(
   }
 
   const unmatchedMessages: string[] = [];
+  let appliedFieldMessage = false;
 
   for (const [field, messages] of Object.entries(error.errors)) {
+    if (messages.length === 0) continue;
+
     if ((validFields as string[]).includes(field)) {
       setError(field as Path<T>, { message: messages[0] });
+      appliedFieldMessage = true;
     } else {
       unmatchedMessages.push(...messages);
     }
@@ -24,5 +28,7 @@ export function applyApiFormErrors<T extends FieldValues>(
 
   if (unmatchedMessages.length > 0) {
     setGeneralError(unmatchedMessages[0]);
+  } else if (!appliedFieldMessage) {
+    setGeneralError(error.message);
   }
 }
