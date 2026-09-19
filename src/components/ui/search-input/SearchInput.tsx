@@ -3,11 +3,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import Input from "@/components/form/input/InputField";
 
-interface UsersFilterBarProps {
+interface SearchInputProps {
   onSearchChange: (search: string) => void;
+  placeholder?: string;
+  debounceMs?: number;
+  className?: string;
 }
 
-export function UsersFilter({ onSearchChange }: UsersFilterBarProps) {
+export const SearchInput: React.FC<SearchInputProps> = ({
+  onSearchChange,
+  placeholder = "Search",
+  debounceMs = 400,
+  className = "w-full sm:max-w-xs",
+}) => {
   const [searchInput, setSearchInput] = useState("");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -15,7 +23,7 @@ export function UsersFilter({ onSearchChange }: UsersFilterBarProps) {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       onSearchChange(searchInput.trim());
-    }, 400);
+    }, debounceMs);
 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -24,12 +32,12 @@ export function UsersFilter({ onSearchChange }: UsersFilterBarProps) {
   }, [searchInput]);
 
   return (
-    <div className="w-full sm:max-w-xs">
+    <div className={className}>
       <Input
         type="text"
-        placeholder="Search by name or email"
+        placeholder={placeholder}
         onChange={(e) => setSearchInput(e.target.value)}
       />
     </div>
   );
-}
+};

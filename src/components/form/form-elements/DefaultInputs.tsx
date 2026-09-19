@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import ComponentCard from "../../common/ComponentCard";
 import Label from "../Label";
 import Input from "../input/InputField";
-import Select from "../Select";
+import { Select } from "../Select";
 import {
   ChevronDownIcon,
   EyeCloseIcon,
@@ -12,7 +12,7 @@ import {
 } from "../../../icons";
 import DatePicker from "@/components/form/date-picker";
 
-export default function DefaultInputs() {
+export function DefaultInputs() {
   const [showPassword, setShowPassword] = useState(false);
   const options = [
     { value: "marketing", label: "Marketing" },

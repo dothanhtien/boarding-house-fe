@@ -1,12 +1,13 @@
 "use client";
 import React from "react";
-import { useModal } from "../../hooks/useModal";
+import { useModal } from "@/hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
+import { InfoItem } from "../ui/info-item/InfoItem";
 
-export default function UserInfoCard() {
+export function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
   const handleSave = () => {
     console.log("Saving changes...");
@@ -21,50 +22,11 @@ export default function UserInfoCard() {
           </h4>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
-            <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                First Name
-              </p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Tien
-              </p>
-            </div>
-
-            <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                Last Name
-              </p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Do Thanh
-              </p>
-            </div>
-
-            <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                Email address
-              </p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                admin@example.com
-              </p>
-            </div>
-
-            <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                Phone
-              </p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                +84 333 333 33
-              </p>
-            </div>
-
-            <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                Bio
-              </p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Platform Admin
-              </p>
-            </div>
+            <InfoItem label="First Name" value="Tien" />
+            <InfoItem label="Last Name" value="Do Thanh" />
+            <InfoItem label="Email address" value="admin@example.com" />
+            <InfoItem label="Phone" value="+84 333 333 33" />
+            <InfoItem label="Bio" value="Platform Admin" />
           </div>
         </div>
 

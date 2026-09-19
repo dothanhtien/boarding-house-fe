@@ -15,7 +15,7 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
         {pageTitle}
       </h2>
       <nav>
-        <ol className="flex items-center gap-1.5">
+        <ol className="flex items-baseline gap-1.5">
           <li>
             <Link
               className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400"

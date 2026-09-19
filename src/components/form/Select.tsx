@@ -13,20 +13,19 @@ interface SelectProps {
   defaultValue?: string;
 }
 
-const Select: React.FC<SelectProps> = ({
+export const Select: React.FC<SelectProps> = ({
   options,
   placeholder = "Select an option",
   onChange,
   className = "",
   defaultValue = "",
 }) => {
-  // Manage the selected value
   const [selectedValue, setSelectedValue] = useState<string>(defaultValue);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     setSelectedValue(value);
-    onChange(value); // Trigger parent handler
+    onChange(value);
   };
 
   return (
@@ -39,15 +38,12 @@ const Select: React.FC<SelectProps> = ({
       value={selectedValue}
       onChange={handleChange}
     >
-      {/* Placeholder option */}
       <option
         value=""
-        disabled
         className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
       >
         {placeholder}
       </option>
-      {/* Map over options */}
       {options.map((option) => (
         <option
           key={option.value}
@@ -60,5 +56,3 @@ const Select: React.FC<SelectProps> = ({
     </select>
   );
 };
-
-export default Select;
