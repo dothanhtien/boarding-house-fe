@@ -36,7 +36,10 @@ export function useDeleteUser() {
   return useMutation<void, ApiError, string>({
     mutationFn: (id) => usersApi.deleteUser(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: userKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: userKeys.all,
+        refetchType: "none",
+      });
     },
   });
 }

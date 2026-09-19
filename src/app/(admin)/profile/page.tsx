@@ -1,8 +1,8 @@
-import UserAddressCard from "@/components/user-profile/UserAddressCard";
-import UserInfoCard from "@/components/user-profile/UserInfoCard";
-import UserMetaCard from "@/components/user-profile/UserMetaCard";
-import { Metadata } from "next";
 import React from "react";
+import { Metadata } from "next";
+import { UserAddressCard } from "@/components/user-profile/UserAddressCard";
+import { UserInfoCard } from "@/components/user-profile/UserInfoCard";
+import UserMetaCard from "@/components/user-profile/UserMetaCard";
 
 export const metadata: Metadata = {
   title: "Profile | Boarding House",
@@ -16,6 +16,7 @@ export default function Profile() {
         <h3 className="mb-5 text-lg font-semibold text-gray-800 lg:mb-7 dark:text-white/90">
           Profile
         </h3>
+
         <div className="space-y-6">
           <UserMetaCard />
           <UserInfoCard />

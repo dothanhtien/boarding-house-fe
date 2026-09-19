@@ -1,3 +1,5 @@
+import { ListQueryParams, PagedResult } from "@/types";
+
 export type User = {
   id: string;
   email: string;
@@ -10,22 +12,9 @@ export type User = {
   updatedAt: string | null;
 };
 
-export type GetUsersParams = {
-  search?: string;
-  isActive?: boolean;
-  sortBy?: string;
-  sortOrder?: "desc" | "asc";
-  page?: number;
-  pageSize?: number;
-};
+export type GetUsersParams = ListQueryParams;
 
-export type GetUsersResponse = {
-  items: User[];
-  page: number;
-  pageSize: number;
-  totalItems: number;
-  totalPages: number;
-};
+export type GetUsersResponse = PagedResult<User>;
 
 export type CreateUserPayload = {
   email: string;

@@ -12,6 +12,7 @@ import Switch from "@/components/form/switch/Switch";
 import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
 import { ApiError } from "@/lib/axios";
+import { applyApiFormErrors } from "@/utils/formErrors";
 
 interface EditUserModalProps {
   user: User;
@@ -66,7 +67,7 @@ export function EditUserModal({ user, onClose }: EditUserModalProps) {
     if (dirtyFields.isActive) payload.isActive = values.isActive;
 
     if (Object.keys(payload).length === 0) {
-      setWarning("You haven't changed anything yet.");
+      setWarning("You haven't changed anything yet");
       return;
     }
 
@@ -75,15 +76,12 @@ export function EditUserModal({ user, onClose }: EditUserModalProps) {
       {
         onSuccess: handleUpdateSuccess,
         onError: (error: ApiError) => {
-          if (error.errors) {
-            for (const [field, messages] of Object.entries(error.errors)) {
-              setError(field as keyof UpdateUserFormValues, {
-                message: messages[0],
-              });
-            }
-          } else {
-            setGeneralError(error.message);
-          }
+          applyApiFormErrors(
+            error,
+            ["email", "fullName", "phone", "isActive"],
+            setError,
+            setGeneralError,
+          );
         },
       },
     );
@@ -97,9 +95,12 @@ export function EditUserModal({ user, onClose }: EditUserModalProps) {
       closeOnBackdropClick={false}
     >
       <div className="no-scrollbar relative w-full max-w-[500px] rounded-3xl bg-white p-6 lg:p-8 dark:bg-gray-900">
-        <h4 className="mb-6 text-2xl font-semibold text-gray-800 dark:text-white/90">
+        <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
           Edit user
         </h4>
+        <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">
+          Update the user&apos;s account information.
+        </p>
 
         <Form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
           {generalError && (

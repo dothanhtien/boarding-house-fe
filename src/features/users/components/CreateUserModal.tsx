@@ -7,6 +7,7 @@ import Form from "@/components/form/Form";
 import { CreateUserFormValues, createUserSchema } from "../schemas";
 import { useCreateUser } from "../mutations";
 import { ApiError } from "@/lib/axios";
+import { applyApiFormErrors } from "@/utils/formErrors";
 import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 import Button from "@/components/ui/button/Button";
@@ -67,15 +68,12 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
       {
         onSuccess: handleCreateSuccess,
         onError: (error: ApiError) => {
-          if (error.errors) {
-            for (const [field, messages] of Object.entries(error.errors)) {
-              setError(field as keyof CreateUserFormValues, {
-                message: messages[0],
-              });
-            }
-          } else {
-            setGeneralError(error.message);
-          }
+          applyApiFormErrors(
+            error,
+            Object.keys(DEFAULT_VALUES) as (keyof CreateUserFormValues)[],
+            setError,
+            setGeneralError,
+          );
         },
       },
     );
@@ -89,9 +87,12 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
       closeOnBackdropClick={false}
     >
       <div className="no-scrollbar relative w-full max-w-[500px] rounded-3xl bg-white p-6 lg:p-8 dark:bg-gray-900">
-        <h4 className="mb-6 text-2xl font-semibold text-gray-800 dark:text-white/90">
+        <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
           Add user
         </h4>
+        <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">
+          Fill in the user&apos;s information to add them to the system.
+        </p>
 
         <Form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
           {generalError && (
