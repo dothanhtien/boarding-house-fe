@@ -1,5 +1,16 @@
 import type { ListQueryParams, PagedResult } from "@/types";
 
+export type OrganizationMember = {
+  id: string;
+  userId: string;
+  userEmail: string;
+  userFullName: string;
+  roleId: string;
+  roleSlug: string;
+  roleName: string;
+  createdAt: string;
+};
+
 export type Organization = {
   id: string;
   name: string;
@@ -13,6 +24,7 @@ export type Organization = {
   isActive: boolean;
   createdAt: string;
   updatedAt: string | null;
+  members: OrganizationMember[] | null;
 };
 
 export type GetOrganizationsParams = ListQueryParams;
@@ -28,11 +40,22 @@ export type CreateOrganizationPayload = {
   district?: string | null;
   ward?: string | null;
   address?: string | null;
+  ownerId: string;
 };
 
-export type UpdateOrganizationPayload = Partial<
-  Omit<Organization, "id" | "createdAt" | "updatedAt">
->;
+export type UpdateOrganizationPayload = Partial<{
+  name: string;
+  taxCode: string | null;
+  phone: string | null;
+  email: string | null;
+  province: string | null;
+  district: string | null;
+  ward: string | null;
+  address: string | null;
+  ownerId: string;
+  keepPreviousOwnerAsStaff: boolean;
+  isActive: boolean;
+}>;
 
 export type LateFeeType = "percent" | "fixed";
 
