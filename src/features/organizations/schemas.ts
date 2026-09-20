@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const createOrganizationSchema = z.object({
+const organizationBaseSchema = z.object({
   name: z
     .string()
     .trim()
@@ -30,11 +30,17 @@ export const createOrganizationSchema = z.object({
   address: z.string(),
 });
 
+export const createOrganizationSchema = organizationBaseSchema.extend({
+  ownerId: z.string().trim().min(1, "Owner is required"),
+});
+
 export type CreateOrganizationFormValues = z.infer<
   typeof createOrganizationSchema
 >;
 
-export const updateOrganizationSchema = createOrganizationSchema.extend({
+export const updateOrganizationSchema = organizationBaseSchema.extend({
+  ownerId: z.string().trim().min(1, "Owner is required"),
+  keepPreviousOwnerAsStaff: z.boolean(),
   isActive: z.boolean(),
 });
 

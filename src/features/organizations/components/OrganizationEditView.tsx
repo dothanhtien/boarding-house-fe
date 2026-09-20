@@ -4,15 +4,16 @@ import React from "react";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import { useOrganization } from "@/features/organizations/queries";
 import { OrganizationInfoCard } from "@/features/organizations/components/OrganizationInfoCard";
+import { OrganizationMembersCard } from "@/features/organizations/components/OrganizationMembersCard";
 import { OrganizationSettingsCard } from "@/features/organizations/components/OrganizationSettingsCard";
 
 interface OrganizationEditViewProps {
   organizationId: string;
 }
 
-export function OrganizationEditView({
+export const OrganizationEditView: React.FC<OrganizationEditViewProps> = ({
   organizationId,
-}: OrganizationEditViewProps) {
+}) => {
   const {
     data: organization,
     isLoading,
@@ -35,8 +36,11 @@ export function OrganizationEditView({
         <div className="space-y-6">
           {organization && <OrganizationInfoCard organization={organization} />}
           <OrganizationSettingsCard organizationId={organizationId} />
+          {organization && (
+            <OrganizationMembersCard organization={organization} />
+          )}
         </div>
       </div>
     </div>
   );
-}
+};
