@@ -230,6 +230,11 @@ export const OrganizationInfoEditModal: React.FC<
                       />
                     )}
                   />
+                  {errors.keepPreviousOwnerAsStaff && (
+                    <p className="text-error-500 mt-1.5 text-sm">
+                      {errors.keepPreviousOwnerAsStaff.message}
+                    </p>
+                  )}
                 </div>
               )}
             </div>
@@ -312,17 +317,24 @@ export const OrganizationInfoEditModal: React.FC<
               />
             </div>
 
-            <Controller
-              name="isActive"
-              control={control}
-              render={({ field }) => (
-                <Switch
-                  label="Active"
-                  checked={field.value}
-                  onChange={field.onChange}
-                />
+            <div>
+              <Controller
+                name="isActive"
+                control={control}
+                render={({ field }) => (
+                  <Switch
+                    label="Active"
+                    checked={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+              {errors.isActive && (
+                <p className="text-error-500 mt-1.5 text-sm">
+                  {errors.isActive.message}
+                </p>
               )}
-            />
+            </div>
           </div>
 
           <div className="mt-6 flex items-center justify-end gap-3">

@@ -40,6 +40,7 @@ export const OwnerSelectField = <TFieldValues extends FieldValues>({
         control={control}
         render={({ field }) => (
           <SearchableSelect
+            id={name}
             options={userOptions}
             placeholder={
               isLoadingUsers ? "Loading users..." : "Select an owner"

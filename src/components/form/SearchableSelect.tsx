@@ -9,6 +9,7 @@ interface Option {
 }
 
 interface SearchableSelectProps {
+  id?: string;
   options: Option[];
   value?: string;
   valueLabel?: string;
@@ -24,6 +25,7 @@ interface SearchableSelectProps {
 }
 
 export const SearchableSelect: React.FC<SearchableSelectProps> = ({
+  id,
   options,
   value = "",
   valueLabel,
@@ -46,17 +48,8 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const selectedOption = options.find((option) => option.value === value);
-  const displayLabel = selectedOption?.label ?? (value ? selectedLabel : null);
-
-  useEffect(() => {
-    if (selectedOption) {
-      setSelectedLabel(selectedOption.label);
-    } else if (!value) {
-      setSelectedLabel(null);
-    } else if (valueLabel) {
-      setSelectedLabel(valueLabel);
-    }
-  }, [selectedOption, value, valueLabel]);
+  const displayLabel =
+    selectedOption?.label ?? valueLabel ?? (value ? selectedLabel : null);
 
   useEffect(() => {
     if (!onSearchChange) return;
@@ -97,13 +90,14 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
   return (
     <div className="relative" ref={containerRef}>
       <button
+        id={id}
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         className={`shadow-theme-xs flex h-11 w-full items-center justify-between rounded-lg border px-4 py-2.5 text-left text-sm focus:ring-3 focus:outline-hidden ${
           error
-            ? "border-red-500"
-            : "focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 border-gray-300"
-        } dark:border-gray-700 dark:bg-gray-900 ${
+            ? "border-red-500 dark:border-red-500"
+            : "focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 border-gray-300 dark:border-gray-700"
+        } dark:bg-gray-900 ${
           displayLabel
             ? "text-gray-800 dark:text-white/90"
             : "text-gray-400 dark:text-gray-400"

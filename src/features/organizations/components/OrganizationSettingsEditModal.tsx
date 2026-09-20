@@ -221,7 +221,8 @@ export const OrganizationSettingsEditModal: React.FC<
                     <Select
                       options={LATE_FEE_TYPE_OPTIONS}
                       placeholder="No late fee"
-                      defaultValue={field.value}
+                      value={field.value}
+                      error={!!errors.lateFeeType}
                       onChange={(value) => {
                         field.onChange(value);
                         if (value === "") {
@@ -234,6 +235,11 @@ export const OrganizationSettingsEditModal: React.FC<
                     />
                   )}
                 />
+                {errors.lateFeeType && (
+                  <p className="text-error-500 mt-1.5 text-sm">
+                    {errors.lateFeeType.message}
+                  </p>
+                )}
               </div>
               <div>
                 <Label htmlFor="lateFeeValue">Late fee value</Label>
