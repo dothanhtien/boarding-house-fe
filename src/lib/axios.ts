@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import { useOrganizationStore } from "@/store/organizationStore";
 
 export type ApiError = {
   status: number | null;
@@ -81,6 +82,15 @@ function refreshAccessToken(): Promise<boolean> {
 
   return refreshPromise;
 }
+
+api.interceptors.request.use((config) => {
+  const selectedOrganizationId =
+    useOrganizationStore.getState().selectedOrganizationId;
+  if (selectedOrganizationId) {
+    config.headers.set("X-Organization-Id", selectedOrganizationId);
+  }
+  return config;
+});
 
 api.interceptors.response.use(
   (res) => {

@@ -1,5 +1,21 @@
 import { ListQueryParams, PagedResult } from "@/types";
 
+export type UserRole = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  isActive: boolean;
+};
+
+export type UserOrganizationMembership = {
+  organizationId: string;
+  organizationName: string;
+  roleId: string;
+  roleSlug: string;
+  roleName: string;
+};
+
 export type User = {
   id: string;
   email: string;
@@ -10,6 +26,8 @@ export type User = {
   isActive: boolean;
   createdAt: string;
   updatedAt: string | null;
+  platformRole: UserRole | null;
+  organizations: UserOrganizationMembership[];
 };
 
 export type GetUsersParams = ListQueryParams;
