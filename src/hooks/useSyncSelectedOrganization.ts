@@ -12,10 +12,18 @@ export const useSyncSelectedOrganization = () => {
   const setSelectedOrganizationId = useOrganizationStore(
     (s) => s.setSelectedOrganizationId,
   );
+  const clearSelectedOrganizationId = useOrganizationStore(
+    (s) => s.clearSelectedOrganizationId,
+  );
 
   useEffect(() => {
-    const organizations = user?.organizations ?? [];
-    if (organizations.length === 0) return;
+    if (!user) return;
+
+    const organizations = user.organizations ?? [];
+    if (organizations.length === 0) {
+      clearSelectedOrganizationId();
+      return;
+    }
 
     const isSelectedValid = organizations.some(
       (o) => o.organizationId === selectedOrganizationId,
@@ -23,5 +31,10 @@ export const useSyncSelectedOrganization = () => {
     if (!isSelectedValid) {
       setSelectedOrganizationId(organizations[0].organizationId);
     }
-  }, [user, selectedOrganizationId, setSelectedOrganizationId]);
+  }, [
+    user,
+    selectedOrganizationId,
+    setSelectedOrganizationId,
+    clearSelectedOrganizationId,
+  ]);
 };
