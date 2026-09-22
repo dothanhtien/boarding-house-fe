@@ -1,38 +1,37 @@
 "use client";
+
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
+import { ROUTES } from "@/config/routeDefinition";
 import { useLogout } from "@/features/auth/mutations";
 
-export default function UserDropdown() {
+export const UserDropdown: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [signOutError, setSignOutError] = useState<string | null>(null);
-  const router = useRouter();
   const logoutMutation = useLogout();
 
-  function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+  const toggleDropdown = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
     e.stopPropagation();
     setIsOpen((prev) => !prev);
-  }
+  };
 
-  function closeDropdown() {
-    setIsOpen(false);
-  }
+  const closeDropdown = () => setIsOpen(false);
 
-  function handleSignOut() {
+  const handleSignOut = () => {
     setSignOutError(null);
     logoutMutation.mutate(undefined, {
       onSuccess: () => {
         closeDropdown();
-        router.replace("/signin");
       },
       onError: () => {
         setSignOutError("Sign out failed. Please try again.");
       },
     });
-  }
+  };
 
   return (
     <div className="relative">
@@ -92,7 +91,7 @@ export default function UserDropdown() {
             <DropdownItem
               onItemClick={closeDropdown}
               tag="a"
-              href="/profile"
+              href={ROUTES.profile}
               className="group text-theme-sm flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
             >
               <svg
@@ -143,4 +142,4 @@ export default function UserDropdown() {
       </Dropdown>
     </div>
   );
-}
+};

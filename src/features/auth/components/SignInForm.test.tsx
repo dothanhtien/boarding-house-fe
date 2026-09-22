@@ -114,6 +114,8 @@ describe("SignInForm", () => {
       isActive: true,
       createdAt: "",
       updatedAt: "",
+      platformRole: null,
+      organizations: [],
     });
 
     renderSignInForm();
@@ -141,6 +143,8 @@ describe("SignInForm", () => {
       isActive: true,
       createdAt: "",
       updatedAt: "",
+      platformRole: null,
+      organizations: [],
     });
 
     renderSignInForm();

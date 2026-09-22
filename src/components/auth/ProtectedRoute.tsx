@@ -1,7 +1,9 @@
 import React, { useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { clearSessionMarker, setSessionMarker } from "@/utils/sessionMarker";
+import { consumeLoggingOut } from "@/features/auth/mutations";
 import { useMe } from "@/features/auth/queries";
+import { clearSessionMarker, setSessionMarker } from "@/utils/sessionMarker";
+import { ROUTES } from "@/config/routeDefinition";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -25,9 +27,15 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
     if (isError || !user) {
       clearSessionMarker();
+      if (consumeLoggingOut()) {
+        router.replace(ROUTES.signIn);
+        return;
+      }
       const search = searchParams.toString();
       const redirectTarget = search ? `${pathname}?${search}` : pathname;
-      router.replace(`/signin?redirect=${encodeURIComponent(redirectTarget)}`);
+      router.replace(
+        `${ROUTES.signIn}?redirect=${encodeURIComponent(redirectTarget)}`,
+      );
     } else {
       setSessionMarker();
     }
