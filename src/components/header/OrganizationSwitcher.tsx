@@ -2,9 +2,13 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import { ROUTES } from "@/config/routeDefinition";
+import { organizationKeys } from "@/features/organizations/queries";
+import { propertyKeys } from "@/features/properties/queries";
+import { userKeys } from "@/features/users/queries";
 import { useUserRole } from "@/hooks/useUserRole";
 import { ChevronDownIcon } from "@/icons";
 import { useOrganizationStore } from "@/store/organizationStore";
@@ -12,6 +16,7 @@ import { useOrganizationStore } from "@/store/organizationStore";
 export const OrganizationSwitcher: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { organizations } = useUserRole();
   const selectedOrganizationId = useOrganizationStore(
     (s) => s.selectedOrganizationId,
@@ -58,11 +63,16 @@ export const OrganizationSwitcher: React.FC = () => {
           <DropdownItem
             key={org.organizationId}
             onItemClick={() => {
-              setSelectedOrganizationId(org.organizationId);
               closeDropdown();
-              if (org.organizationId !== selectedOrganizationId) {
-                router.push(ROUTES.dashboard);
-              }
+              if (org.organizationId === selectedOrganizationId) return;
+
+              setSelectedOrganizationId(org.organizationId);
+              queryClient.invalidateQueries({
+                queryKey: organizationKeys.all,
+              });
+              queryClient.invalidateQueries({ queryKey: propertyKeys.all });
+              queryClient.invalidateQueries({ queryKey: userKeys.all });
+              router.push(ROUTES.dashboard);
             }}
             baseClassName=""
             className={`text-theme-sm block w-full rounded-lg px-3 py-2 text-left font-medium ${

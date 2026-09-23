@@ -4,6 +4,7 @@ export const ROUTES = {
   users: "/users",
   organizations: "/organizations",
   organizationDetail: (id: string) => `/organizations/${id}`,
+  properties: "/properties",
   signIn: "/signin",
   signUp: "/signup",
 };
