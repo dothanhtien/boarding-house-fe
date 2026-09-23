@@ -19,6 +19,11 @@ export const propertiesApi = {
     return res.data;
   },
 
+  async getProperty(id: string, signal?: AbortSignal): Promise<Property> {
+    const res = await api.get<Property>(`/properties/${id}`, { signal });
+    return res.data;
+  },
+
   async createProperty(payload: CreatePropertyPayload): Promise<Property> {
     const res = await api.post<Property>("/properties", payload);
     return res.data;

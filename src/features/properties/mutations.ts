@@ -28,8 +28,9 @@ export function useUpdateProperty() {
     { id: string; payload: UpdatePropertyPayload }
   >({
     mutationFn: ({ id, payload }) => propertiesApi.updateProperty(id, payload),
-    onSuccess() {
+    onSuccess(_, { id }) {
       queryClient.invalidateQueries({ queryKey: propertyKeys.lists() });
+      queryClient.invalidateQueries({ queryKey: propertyKeys.detail(id) });
     },
   });
 }

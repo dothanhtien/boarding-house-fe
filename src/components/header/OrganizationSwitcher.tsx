@@ -8,6 +8,7 @@ import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import { ROUTES } from "@/config/routeDefinition";
 import { organizationKeys } from "@/features/organizations/queries";
 import { propertyKeys } from "@/features/properties/queries";
+import { roomKeys } from "@/features/rooms/queries";
 import { userKeys } from "@/features/users/queries";
 import { useUserRole } from "@/hooks/useUserRole";
 import { ChevronDownIcon } from "@/icons";
@@ -69,6 +70,7 @@ export const OrganizationSwitcher: React.FC = () => {
               setSelectedOrganizationId(org.organizationId);
               queryClient.removeQueries({ queryKey: organizationKeys.all });
               queryClient.removeQueries({ queryKey: propertyKeys.all });
+              queryClient.removeQueries({ queryKey: roomKeys.all });
               queryClient.removeQueries({ queryKey: userKeys.all });
               router.push(ROUTES.dashboard);
             }}
