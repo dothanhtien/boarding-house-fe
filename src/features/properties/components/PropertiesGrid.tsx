@@ -1,6 +1,8 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import Badge from "@/components/ui/badge/Badge";
+import { ROUTES } from "@/config/routeDefinition";
 import type { Property } from "@/features/properties/types";
 import { formatDate } from "@/utils/date";
 import { PencilIcon, TrashBinIcon } from "@/icons";
@@ -107,14 +109,20 @@ export function PropertiesGrid({
             className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]"
           >
             <div className="relative aspect-video w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
-              <Image
-                src={getCoverImage(property)}
-                alt={property.name}
-                fill
-                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                className="object-cover"
-                priority={index < 3}
-              />
+              <Link
+                href={ROUTES.propertyRooms(property.id)}
+                aria-label={`Manage rooms of ${property.name}`}
+                className="absolute inset-0"
+              >
+                <Image
+                  src={getCoverImage(property)}
+                  alt={property.name}
+                  fill
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  className="object-cover transition-transform duration-300 hover:scale-105"
+                  priority={index < 3}
+                />
+              </Link>
               <div className="absolute top-3 right-3 flex items-center gap-2">
                 <button
                   type="button"
@@ -138,7 +146,12 @@ export function PropertiesGrid({
             <div className="p-5">
               <div className="flex items-start justify-between gap-3">
                 <h3 className="text-theme-sm font-semibold text-gray-800 dark:text-white/90">
-                  {property.name}
+                  <Link
+                    href={ROUTES.propertyRooms(property.id)}
+                    className="hover:text-brand-500 dark:hover:text-brand-400"
+                  >
+                    {property.name}
+                  </Link>
                 </h3>
                 <Badge
                   size="sm"

@@ -5,6 +5,7 @@ export const ROUTES = {
   organizations: "/organizations",
   organizationDetail: (id: string) => `/organizations/${id}`,
   properties: "/properties",
+  propertyRooms: (id: string) => `/properties/${id}`,
   signIn: "/signin",
   signUp: "/signup",
 };
