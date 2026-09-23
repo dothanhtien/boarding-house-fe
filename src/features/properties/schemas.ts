@@ -23,22 +23,32 @@ const propertyBaseSchema = z.object({
   lateFeeType: z.enum(["", "percent", "fixed"]),
   lateFeeValue: z.string().refine((value) => {
     if (value === "") return true;
-    return !Number.isNaN(Number(value));
-  }, "Late fee value must be a number"),
+    return !Number.isNaN(Number(value)) && Number(value) >= 0;
+  }, "Late fee value must be a non-negative number"),
   lateFeeGraceDays: z
     .string()
     .refine((value) => value === "" || /^\d+$/.test(value), {
-      message: "Late fee grace days must not be negative",
+      message: "Late fee grace days must be a non-negative whole number",
     }),
 });
 
-export const createPropertySchema = propertyBaseSchema.refine(
-  (data) => (data.lateFeeType === "") === (data.lateFeeValue === ""),
-  {
+const lateFeePercentRefinement = (data: {
+  lateFeeType: string;
+  lateFeeValue: string;
+}) => {
+  if (data.lateFeeType !== "percent" || data.lateFeeValue === "") return true;
+  return Number(data.lateFeeValue) <= 100;
+};
+
+export const createPropertySchema = propertyBaseSchema
+  .refine((data) => (data.lateFeeType === "") === (data.lateFeeValue === ""), {
     message: "Late fee type and late fee value must be set together",
     path: ["lateFeeValue"],
-  },
-);
+  })
+  .refine(lateFeePercentRefinement, {
+    message: "Late fee value must not exceed 100 when type is percent",
+    path: ["lateFeeValue"],
+  });
 
 export type CreatePropertyFormValues = z.infer<typeof createPropertySchema>;
 
@@ -48,6 +58,10 @@ export const updatePropertySchema = propertyBaseSchema
   })
   .refine((data) => (data.lateFeeType === "") === (data.lateFeeValue === ""), {
     message: "Late fee type and late fee value must be set together",
+    path: ["lateFeeValue"],
+  })
+  .refine(lateFeePercentRefinement, {
+    message: "Late fee value must not exceed 100 when type is percent",
     path: ["lateFeeValue"],
   });
 

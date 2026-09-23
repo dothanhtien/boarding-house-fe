@@ -67,11 +67,9 @@ export const OrganizationSwitcher: React.FC = () => {
               if (org.organizationId === selectedOrganizationId) return;
 
               setSelectedOrganizationId(org.organizationId);
-              queryClient.invalidateQueries({
-                queryKey: organizationKeys.all,
-              });
-              queryClient.invalidateQueries({ queryKey: propertyKeys.all });
-              queryClient.invalidateQueries({ queryKey: userKeys.all });
+              queryClient.removeQueries({ queryKey: organizationKeys.all });
+              queryClient.removeQueries({ queryKey: propertyKeys.all });
+              queryClient.removeQueries({ queryKey: userKeys.all });
               router.push(ROUTES.dashboard);
             }}
             baseClassName=""
