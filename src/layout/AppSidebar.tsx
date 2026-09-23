@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import { useTheme } from "../context/ThemeContext";
 import { useAllowedNavItems } from "@/hooks/useAllowedNavItems";
-import { type NavItem } from "@/components/sidebar/navigation";
+import { type NavItem } from "@/components/sidebar/navItems";
 import { SidebarNavItem } from "@/components/sidebar/SidebarNavItem";
 import { HorizontaLDots } from "../icons";
 

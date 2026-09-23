@@ -1,3 +1,5 @@
+// https://lineicons.com/
+
 import PlusIcon from "./plus.svg";
 import CloseIcon from "./close.svg";
 import BoxIcon from "./box.svg";
@@ -52,6 +54,7 @@ import ChatIcon from "./chat.svg";
 import MoreDotIcon from "./more-dot.svg";
 import BellIcon from "./bell.svg";
 import BuildingsIcon from "./buildings.svg";
+import HomeIcon from "./home.svg";
 
 export {
   DownloadIcon,
@@ -108,4 +111,5 @@ export {
   ChevronUpIcon,
   ChatIcon,
   BuildingsIcon,
+  HomeIcon,
 };

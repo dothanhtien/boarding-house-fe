@@ -6,7 +6,7 @@ import {
   ROLE_NAV_ITEMS,
   getOrgRoleNavItems,
   type NavItem,
-} from "@/components/sidebar/navigation";
+} from "@/components/sidebar/navItems";
 
 export const useAllowedNavItems = (): NavItem[] => {
   const { platformRoleSlug, currentOrgRoleSlug, selectedOrganizationId } =

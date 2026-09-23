@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { type NavItem } from "@/components/sidebar/navigation";
+import { type NavItem } from "@/components/sidebar/navItems";
 import { ChevronDownIcon } from "@/icons/index";
 
 interface SidebarNavItemProps {
