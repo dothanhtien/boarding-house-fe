@@ -4,6 +4,13 @@ export type RoomCategory = "standard" | "studio" | "duplex" | "apartment";
 
 export type RoomStatus = "available" | "reserved" | "occupied" | "maintenance";
 
+export type RoomAmenity = {
+  id: string;
+  name: string;
+  quantity: number | null;
+  icon: string | null;
+};
+
 export type Room = {
   id: string;
   propertyId: string;
@@ -18,6 +25,7 @@ export type Room = {
   note: string | null;
   createdAt: string;
   updatedAt: string | null;
+  amenities: RoomAmenity[];
 };
 
 export type GetRoomsParams = Omit<ListQueryParams, "isActive"> & {
@@ -38,6 +46,13 @@ export type CreateRoomPayload = {
   monthlyRent?: number | null;
   depositAmount?: number | null;
   note?: string | null;
+  amenities?: CreateRoomAmenityPayload[];
+};
+
+export type CreateRoomAmenityPayload = {
+  name: string;
+  quantity?: number | null;
+  icon?: string | null;
 };
 
 export type UpdateRoomPayload = Partial<{
@@ -50,4 +65,13 @@ export type UpdateRoomPayload = Partial<{
   monthlyRent: number | null;
   depositAmount: number | null;
   note: string | null;
+  amenities: UpdateRoomAmenityPayload[];
 }>;
+
+export type UpdateRoomAmenityPayload = {
+  id?: string;
+  name?: string;
+  quantity?: number | null;
+  icon?: string | null;
+  isDeleted?: boolean;
+};

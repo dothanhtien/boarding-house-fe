@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="132" viewBox="0 0 160 132" fill="none">
+  <ellipse cx="84" cy="122" rx="72" ry="6" fill="#101828" fill-opacity="0.08"/>
+  <!-- tree -->
+  <rect x="22" y="94" width="5" height="24" rx="1" fill="#B8743F"/>
+  <circle cx="24.5" cy="88" r="14" fill="#12B76A"/>
+  <circle cx="24.5" cy="79" r="10" fill="#32D583"/>
+  <!-- side building -->
+  <rect x="110" y="54" width="40" height="64" rx="3" fill="#9CB9FF"/>
+  <rect x="118" y="64" width="9" height="9" rx="1.5" fill="#ECF3FF"/>
+  <rect x="133" y="64" width="9" height="9" rx="1.5" fill="#ECF3FF"/>
+  <rect x="118" y="80" width="9" height="9" rx="1.5" fill="#ECF3FF"/>
+  <rect x="133" y="80" width="9" height="9" rx="1.5" fill="#FDB022"/>
+  <rect x="118" y="96" width="9" height="9" rx="1.5" fill="#ECF3FF"/>
+  <rect x="133" y="96" width="9" height="9" rx="1.5" fill="#ECF3FF"/>
+  <!-- main building -->
+  <rect x="44" y="22" width="72" height="96" rx="4" fill="#465FFF"/>
+  <rect x="40" y="16" width="80" height="9" rx="2" fill="#3641F5"/>
+  <g fill="#DDE9FF">
+    <rect x="53" y="32" width="14" height="12" rx="2"/>
+    <rect x="93" y="32" width="14" height="12" rx="2"/>
+    <rect x="73" y="52" width="14" height="12" rx="2"/>
+    <rect x="53" y="72" width="14" height="12" rx="2"/>
+    <rect x="73" y="72" width="14" height="12" rx="2"/>
+    <rect x="93" y="72" width="14" height="12" rx="2"/>
+  </g>
+  <g fill="#FDB022">
+    <rect x="73" y="32" width="14" height="12" rx="2"/>
+    <rect x="53" y="52" width="14" height="12" rx="2"/>
+    <rect x="93" y="52" width="14" height="12" rx="2"/>
+  </g>
+  <rect x="70" y="96" width="20" height="22" rx="2" fill="#344054"/>
+  <rect x="79.5" y="96" width="1" height="22" fill="#667085"/>
+</svg>

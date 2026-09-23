@@ -16,6 +16,11 @@ export const roomsApi = {
     return res.data;
   },
 
+  async getRoom(id: string, signal?: AbortSignal): Promise<Room> {
+    const res = await api.get<Room>(`/rooms/${id}`, { signal });
+    return res.data;
+  },
+
   async createRoom(payload: CreateRoomPayload): Promise<Room> {
     const res = await api.post<Room>("/rooms", payload);
     return res.data;

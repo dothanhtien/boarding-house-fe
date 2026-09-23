@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="132" viewBox="0 0 160 132" fill="none">
+  <ellipse cx="82" cy="122" rx="72" ry="6" fill="#101828" fill-opacity="0.08"/>
+  <!-- plant -->
+  <ellipse cx="12" cy="86" rx="5" ry="12" fill="#12B76A" transform="rotate(-20 12 86)"/>
+  <ellipse cx="22" cy="84" rx="5" ry="13" fill="#32D583" transform="rotate(18 22 84)"/>
+  <ellipse cx="17" cy="80" rx="4.5" ry="13" fill="#12B76A"/>
+  <path d="M7 98h20l-3 20H10L7 98Z" fill="#D98B4E"/>
+  <!-- sofa -->
+  <rect x="38" y="64" width="90" height="36" rx="10" fill="#465FFF"/>
+  <rect x="34" y="90" width="98" height="20" rx="6" fill="#7592FF"/>
+  <rect x="28" y="80" width="16" height="32" rx="7" fill="#3641F5"/>
+  <rect x="122" y="80" width="16" height="32" rx="7" fill="#3641F5"/>
+  <rect x="48" y="73" width="32" height="18" rx="6" fill="#9CB9FF"/>
+  <rect x="86" y="73" width="32" height="18" rx="6" fill="#9CB9FF"/>
+  <rect x="40" y="112" width="5" height="7" rx="1" fill="#344054"/>
+  <rect x="121" y="112" width="5" height="7" rx="1" fill="#344054"/>
+  <!-- floor lamp -->
+  <rect x="145" y="38" width="3" height="80" fill="#667085"/>
+  <ellipse cx="146.5" cy="118" rx="9" ry="3" fill="#667085"/>
+  <path d="M134 40h25l-6-17h-13l-6 17Z" fill="#FDB022"/>
+</svg>

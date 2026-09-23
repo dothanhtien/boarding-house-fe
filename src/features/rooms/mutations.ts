@@ -9,7 +9,8 @@ export function useCreateRoom() {
 
   return useMutation<Room, ApiError, CreateRoomPayload>({
     mutationFn: (payload) => roomsApi.createRoom(payload),
-    onSuccess() {
+    onSuccess(data) {
+      queryClient.setQueryData(roomKeys.detail(data.id), data);
       queryClient.invalidateQueries({ queryKey: roomKeys.lists() });
     },
   });
@@ -24,7 +25,8 @@ export function useUpdateRoom() {
     { id: string; payload: UpdateRoomPayload }
   >({
     mutationFn: ({ id, payload }) => roomsApi.updateRoom(id, payload),
-    onSuccess() {
+    onSuccess(data, { id }) {
+      queryClient.setQueryData(roomKeys.detail(id), data);
       queryClient.invalidateQueries({ queryKey: roomKeys.lists() });
     },
   });
@@ -35,7 +37,11 @@ export function useDeleteRoom() {
 
   return useMutation<void, ApiError, string>({
     mutationFn: (id) => roomsApi.deleteRoom(id),
-    onSuccess() {
+    onSuccess(_data, id) {
+      queryClient.invalidateQueries({
+        queryKey: roomKeys.detail(id),
+        refetchType: "none",
+      });
       queryClient.invalidateQueries({
         queryKey: roomKeys.lists(),
         refetchType: "none",
