@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import Pagination from "@/components/tables/Pagination";
 import { SearchInput } from "@/components/ui/search-input/SearchInput";
@@ -9,14 +10,9 @@ import Button from "@/components/ui/button/Button";
 import { ROUTES } from "@/config/routeDefinition";
 import { useProperty } from "@/features/properties/queries";
 import { useRooms } from "@/features/rooms/queries";
-import type { Room } from "@/features/rooms/types";
 import { useListPageState } from "@/hooks/useListPageState";
-import { useModal } from "@/hooks/useModal";
 import { ChevronLeftIcon, PlusIcon } from "@/icons";
 import { RoomsGrid } from "./RoomsGrid";
-import { CreateRoomModal } from "./CreateRoomModal";
-import { EditRoomModal } from "./EditRoomModal";
-import { DeleteRoomDialog } from "./DeleteRoomDialog";
 
 const PAGE_SIZE = 20;
 
@@ -25,14 +21,11 @@ interface RoomsViewProps {
 }
 
 export function RoomsView({ propertyId }: RoomsViewProps) {
-  const { page, search, setSearch, handlePageChange, handleItemDeleted } =
-    useListPageState();
-  const { isOpen, openModal, closeModal } = useModal();
-  const [editingRoom, setEditingRoom] = useState<Room | null>(null);
-  const [deletingRoom, setDeletingRoom] = useState<Room | null>(null);
+  const { page, search, setSearch, handlePageChange } = useListPageState();
+  const router = useRouter();
 
   const { data: property, error: propertyError } = useProperty(propertyId);
-  const { data, isLoading, isFetching, error, refetch } = useRooms({
+  const { data, isLoading, isFetching, error } = useRooms({
     propertyId,
     page,
     pageSize: PAGE_SIZE,
@@ -40,10 +33,6 @@ export function RoomsView({ propertyId }: RoomsViewProps) {
     sortBy: "roomNumber",
     sortOrder: "asc",
   });
-
-  function handleRoomDeleted() {
-    handleItemDeleted(data?.items.length ?? 0, refetch);
-  }
 
   return (
     <div>
@@ -72,7 +61,7 @@ export function RoomsView({ propertyId }: RoomsViewProps) {
             <Button
               size="sm"
               startIcon={<PlusIcon />}
-              onClick={openModal}
+              onClick={() => router.push(ROUTES.createRoom(propertyId))}
               disabled={!property}
             >
               Add room
@@ -86,8 +75,6 @@ export function RoomsView({ propertyId }: RoomsViewProps) {
             isLoading={isLoading}
             isFetching={isFetching}
             hasError={!!error}
-            onEdit={setEditingRoom}
-            onDelete={setDeletingRoom}
           />
 
           {data && data.totalPages > 1 && (
@@ -101,27 +88,6 @@ export function RoomsView({ propertyId }: RoomsViewProps) {
           )}
         </div>
       </div>
-
-      <CreateRoomModal
-        propertyId={propertyId}
-        isOpen={isOpen}
-        onClose={closeModal}
-      />
-
-      {editingRoom && (
-        <EditRoomModal
-          room={editingRoom}
-          onClose={() => setEditingRoom(null)}
-        />
-      )}
-
-      {deletingRoom && (
-        <DeleteRoomDialog
-          room={deletingRoom}
-          onClose={() => setDeletingRoom(null)}
-          onDeleted={handleRoomDeleted}
-        />
-      )}
     </div>
   );
 }
