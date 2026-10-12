@@ -6,7 +6,7 @@ import { X } from "lucide-react";
 
 interface ImageFilePreviewProps {
   file: File;
-  src: string;
+  src: string | undefined;
   onRemove: () => void;
   disabled?: boolean;
   badge?: React.ReactNode;
@@ -24,13 +24,15 @@ export const ImageFilePreview: React.FC<ImageFilePreviewProps> = ({
   <li
     className={`relative aspect-square overflow-hidden rounded-lg ${className}`}
   >
-    <Image
-      src={src}
-      alt={file.name}
-      fill
-      unoptimized
-      className="object-cover"
-    />
+    {src && (
+      <Image
+        src={src}
+        alt={file.name}
+        fill
+        unoptimized
+        className="object-cover"
+      />
+    )}
     {badge}
     <button
       type="button"

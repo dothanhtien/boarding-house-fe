@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useUpdateOrganization } from "../mutations";
@@ -75,7 +75,6 @@ export const OrganizationInfoEditModal: React.FC<
     control,
     setError,
     reset,
-    watch,
     setValue,
     formState: { errors, dirtyFields },
   } = useForm<UpdateOrganizationFormValues>({
@@ -85,7 +84,7 @@ export const OrganizationInfoEditModal: React.FC<
   });
 
   const currentOwnerId = getOwnerId(organization);
-  const selectedOwnerId = watch("ownerId");
+  const selectedOwnerId = useWatch({ control, name: "ownerId" });
   const isOwnerChanged =
     !!selectedOwnerId && selectedOwnerId !== currentOwnerId;
 

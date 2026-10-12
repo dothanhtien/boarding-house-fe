@@ -33,8 +33,14 @@ export const ImageFilesInput: React.FC<ImageFilesInputProps> = ({
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: Object.fromEntries(accept.map((type) => [type, []])),
     disabled: disabled || isFull,
-    onDrop: (acceptedFiles, rejections) =>
-      onChange([...value, ...acceptedFiles, ...rejections.map((r) => r.file)]),
+    onDrop: (acceptedFiles, rejections) => {
+      const remaining = Math.max(maxFiles - value.length, 0);
+      onChange([
+        ...value,
+        ...acceptedFiles.slice(0, remaining),
+        ...rejections.map((r) => r.file),
+      ]);
+    },
   });
 
   const previews = useObjectUrls(value);

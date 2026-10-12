@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useId, useRef } from "react";
 import { X } from "lucide-react";
 import { useOverlay } from "@/hooks/useOverlay";
 
@@ -19,7 +19,18 @@ export const Drawer: React.FC<DrawerProps> = ({
   children,
   className = "",
 }) => {
+  const titleId = useId();
+  const panelRef = useRef<HTMLElement>(null);
+
   useOverlay(isOpen, onClose);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    panelRef.current?.focus();
+    return () => previouslyFocused?.focus?.();
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -30,12 +41,17 @@ export const Drawer: React.FC<DrawerProps> = ({
         onClick={onClose}
       />
       <aside
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
-        className={`relative flex h-full w-full max-w-xl flex-col bg-white shadow-xl dark:bg-gray-900 ${className}`}
+        aria-labelledby={titleId}
+        tabIndex={-1}
+        className={`relative flex h-full w-full max-w-xl flex-col bg-white shadow-xl outline-none dark:bg-gray-900 ${className}`}
       >
         <div className="flex items-center justify-between gap-4 border-b border-gray-200 px-5 py-4 dark:border-gray-800">
-          <div className="min-w-0 flex-1">{title}</div>
+          <div id={titleId} className="min-w-0 flex-1">
+            {title}
+          </div>
           <button
             type="button"
             onClick={onClose}

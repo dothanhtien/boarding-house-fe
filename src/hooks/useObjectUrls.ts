@@ -1,17 +1,19 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 
 export function useObjectUrls(files: File[]) {
-  const urls = useMemo(
-    () => files.map((file) => URL.createObjectURL(file)),
-    [files],
-  );
+  const [state, setState] = useState<{ files: File[]; urls: string[] }>({
+    files: [],
+    urls: [],
+  });
 
-  useEffect(
-    () => () => urls.forEach((url) => URL.revokeObjectURL(url)),
-    [urls],
-  );
+  useEffect(() => {
+    const urls = files.map((file) => URL.createObjectURL(file));
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setState({ files, urls });
+    return () => urls.forEach((url) => URL.revokeObjectURL(url));
+  }, [files]);
 
-  return urls;
+  return state.files === files ? state.urls : [];
 }

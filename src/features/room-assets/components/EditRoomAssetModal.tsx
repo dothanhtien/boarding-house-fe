@@ -138,7 +138,12 @@ export const EditRoomAssetModal: React.FC<EditRoomAssetModalProps> = ({
             </div>
 
             <div className="mt-6 flex items-center justify-end gap-3">
-              <Button type="button" variant="outline" onClick={handleClose}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleClose}
+                disabled={updateRoomAssetMutation.isPending}
+              >
                 Cancel
               </Button>
               <Button disabled={updateRoomAssetMutation.isPending}>
