@@ -19,10 +19,15 @@ export function useOrganizations(params: GetOrganizationsParams) {
   });
 }
 
-export function useOrganization(id: string) {
+export function useOrganization(
+  id: string,
+  options: { enabled?: boolean; retry?: boolean } = {},
+) {
   return useQuery({
     queryKey: organizationKeys.detail(id),
     queryFn: ({ signal }) => organizationsApi.getOrganization(id, signal),
+    enabled: options.enabled ?? true,
+    retry: options.retry,
   });
 }
 

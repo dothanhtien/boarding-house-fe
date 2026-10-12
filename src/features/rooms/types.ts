@@ -1,3 +1,4 @@
+import type { RoomDetailsAsset } from "@/features/room-assets/types";
 import { ListQueryParams, PagedResult } from "@/types";
 
 export type RoomCategory = "standard" | "studio" | "duplex" | "apartment";
@@ -26,6 +27,10 @@ export type Room = {
   createdAt: string;
   updatedAt: string | null;
   amenities: RoomAmenity[];
+};
+
+export type RoomDetails = Room & {
+  assets: RoomDetailsAsset[];
 };
 
 export type GetRoomsParams = Omit<ListQueryParams, "isActive"> & {
