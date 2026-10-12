@@ -8,6 +8,7 @@ import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import { InfoItem } from "@/components/ui/info-item/InfoItem";
 import { ROUTES } from "@/config/routeDefinition";
 import { useProperty } from "@/features/properties/queries";
+import { RoomAssetsSection } from "@/features/room-assets/components/RoomAssetsSection";
 import {
   ROOM_CATEGORY_IMAGES,
   ROOM_CATEGORY_LABELS,
@@ -220,6 +221,8 @@ export function RoomDetailView({ propertyId, roomId }: RoomDetailViewProps) {
                 </ul>
               )}
             </div>
+
+            <RoomAssetsSection roomId={room.id} assets={room.assets} />
           </div>
         )}
       </div>

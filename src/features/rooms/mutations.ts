@@ -2,12 +2,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ApiError } from "@/lib/axios";
 import { roomsApi } from "./api";
 import { roomKeys } from "./queries";
-import { CreateRoomPayload, Room, UpdateRoomPayload } from "./types";
+import { CreateRoomPayload, RoomDetails, UpdateRoomPayload } from "./types";
 
 export function useCreateRoom() {
   const queryClient = useQueryClient();
 
-  return useMutation<Room, ApiError, CreateRoomPayload>({
+  return useMutation<RoomDetails, ApiError, CreateRoomPayload>({
     mutationFn: (payload) => roomsApi.createRoom(payload),
     onSuccess(data) {
       queryClient.setQueryData(roomKeys.detail(data.id), data);
@@ -20,7 +20,7 @@ export function useUpdateRoom() {
   const queryClient = useQueryClient();
 
   return useMutation<
-    Room,
+    RoomDetails,
     ApiError,
     { id: string; payload: UpdateRoomPayload }
   >({

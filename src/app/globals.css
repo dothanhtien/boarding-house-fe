@@ -491,6 +491,10 @@ span.flatpickr-weekday,
   @apply right-0;
 }
 
+.flatpickr-calendar.open {
+  z-index: 100000;
+}
+
 .fc .fc-view-harness {
   @apply custom-scrollbar max-w-full overflow-x-auto;
 }

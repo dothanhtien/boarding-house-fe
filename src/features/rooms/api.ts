@@ -3,7 +3,7 @@ import {
   CreateRoomPayload,
   GetRoomsParams,
   GetRoomsResponse,
-  Room,
+  RoomDetails,
   UpdateRoomPayload,
 } from "./types";
 
@@ -16,18 +16,21 @@ export const roomsApi = {
     return res.data;
   },
 
-  async getRoom(id: string, signal?: AbortSignal): Promise<Room> {
-    const res = await api.get<Room>(`/rooms/${id}`, { signal });
+  async getRoom(id: string, signal?: AbortSignal): Promise<RoomDetails> {
+    const res = await api.get<RoomDetails>(`/rooms/${id}`, { signal });
     return res.data;
   },
 
-  async createRoom(payload: CreateRoomPayload): Promise<Room> {
-    const res = await api.post<Room>("/rooms", payload);
+  async createRoom(payload: CreateRoomPayload): Promise<RoomDetails> {
+    const res = await api.post<RoomDetails>("/rooms", payload);
     return res.data;
   },
 
-  async updateRoom(id: string, payload: UpdateRoomPayload): Promise<Room> {
-    const res = await api.patch<Room>(`/rooms/${id}`, payload);
+  async updateRoom(
+    id: string,
+    payload: UpdateRoomPayload,
+  ): Promise<RoomDetails> {
+    const res = await api.patch<RoomDetails>(`/rooms/${id}`, payload);
     return res.data;
   },
 
