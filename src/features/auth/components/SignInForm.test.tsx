@@ -33,11 +33,14 @@ function renderSignInForm() {
   );
 }
 
-async function fillAndSubmit(email?: string, password?: string) {
+async function fillAndSubmit(identifier?: string, password?: string) {
   const user = userEvent.setup();
 
-  if (email !== undefined) {
-    await user.type(screen.getByPlaceholderText("info@gmail.com"), email);
+  if (identifier !== undefined) {
+    await user.type(
+      screen.getByPlaceholderText("Email or phone number"),
+      identifier,
+    );
   }
   if (password !== undefined) {
     await user.type(
@@ -58,10 +61,12 @@ describe("SignInForm", () => {
     }
   });
 
-  it("renders email and password fields", () => {
+  it("renders identifier and password fields", () => {
     renderSignInForm();
 
-    expect(screen.getByPlaceholderText("info@gmail.com")).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("Email or phone number"),
+    ).toBeInTheDocument();
     expect(
       screen.getByPlaceholderText("Enter your password"),
     ).toBeInTheDocument();
@@ -85,12 +90,14 @@ describe("SignInForm", () => {
     expect(passwordInput.type).toBe("text");
   });
 
-  it("shows an error and does not call login when email is missing", async () => {
+  it("shows an error and does not call login when identifier is missing", async () => {
     renderSignInForm();
 
     await fillAndSubmit(undefined, "password123");
 
-    expect(await screen.findByText("Email is required")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Email or phone is required"),
+    ).toBeInTheDocument();
     expect(loginMock).not.toHaveBeenCalled();
   });
 
@@ -124,11 +131,38 @@ describe("SignInForm", () => {
 
     await waitFor(() => {
       expect(loginMock).toHaveBeenCalledWith({
-        email: "user@example.com",
+        identifier: "user@example.com",
         password: "password123",
       });
     });
     await waitFor(() => expect(replaceMock).toHaveBeenCalledWith("/"));
+  });
+
+  it("calls login with a phone number as the identifier", async () => {
+    loginMock.mockResolvedValueOnce({
+      id: "1",
+      email: "user@example.com",
+      emailVerifiedAt: null,
+      phone: "0901234567",
+      fullName: "Test User",
+      lastLoginAt: null,
+      isActive: true,
+      createdAt: "",
+      updatedAt: "",
+      platformRole: null,
+      organizations: [],
+    });
+
+    renderSignInForm();
+
+    await fillAndSubmit("0901234567", "password123");
+
+    await waitFor(() => {
+      expect(loginMock).toHaveBeenCalledWith({
+        identifier: "0901234567",
+        password: "password123",
+      });
+    });
   });
 
   it("redirects to the `redirect` query param on success when present", async () => {
