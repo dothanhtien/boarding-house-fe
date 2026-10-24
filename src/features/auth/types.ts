@@ -1,7 +1,7 @@
 import { UserOrganizationMembership, UserRole } from "../users/types";
 
 export type LoginPayload = {
-  email: string;
+  identifier: string;
   password: string;
 };
 

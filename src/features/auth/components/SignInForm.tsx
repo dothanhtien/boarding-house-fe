@@ -12,7 +12,7 @@ import { getSafeRedirect } from "@/utils/redirect";
 import { useLogin } from "../mutations";
 
 export default function SignInForm() {
-  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [loginData, setLoginData] = useState({ identifier: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -23,11 +23,11 @@ export default function SignInForm() {
     e.preventDefault();
     setError(null);
 
-    const email = loginData.email?.trim();
+    const identifier = loginData.identifier?.trim();
     const password = loginData.password?.trim();
 
-    if (!email) {
-      setError("Email is required");
+    if (!identifier) {
+      setError("Email or phone is required");
       return;
     }
 
@@ -37,10 +37,10 @@ export default function SignInForm() {
     }
 
     loginMutation.mutate(
-      { email, password },
+      { identifier, password },
       {
         onSuccess: () => {
-          setLoginData({ email: "", password: "" });
+          setLoginData({ identifier: "", password: "" });
           router.replace(getSafeRedirect(searchParams.get("redirect")));
         },
         onError: (error: ApiError) => {
@@ -68,15 +68,16 @@ export default function SignInForm() {
                 {error && <p className="text-error-500 text-sm">{error}</p>}
                 <div>
                   <Label>
-                    Email <span className="text-error-500">*</span>{" "}
+                    Email or phone{" "}
+                    <span className="text-error-500">*</span>{" "}
                   </Label>
                   <Input
-                    placeholder="info@gmail.com"
-                    type="email"
+                    placeholder="Email or phone number"
+                    type="text"
                     onChange={(e) =>
                       setLoginData((prev) => ({
                         ...prev,
-                        email: e.target.value,
+                        identifier: e.target.value,
                       }))
                     }
                   />
