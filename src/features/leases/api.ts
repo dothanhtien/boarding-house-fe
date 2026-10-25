@@ -4,6 +4,7 @@ import {
   GetLeasesParams,
   GetLeasesResponse,
   Lease,
+  TerminateLeasePayload,
   UpdateLeasePayload,
 } from "./types";
 
@@ -33,5 +34,18 @@ export const leasesApi = {
 
   async deleteLease(id: string): Promise<void> {
     await api.delete(`/leases/${id}`);
+  },
+
+  async activateLease(id: string): Promise<Lease> {
+    const res = await api.post<Lease>(`/leases/${id}/activate`);
+    return res.data;
+  },
+
+  async terminateLease(
+    id: string,
+    payload: TerminateLeasePayload,
+  ): Promise<Lease> {
+    const res = await api.post<Lease>(`/leases/${id}/terminate`, payload);
+    return res.data;
   },
 };

@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import type { LeaseTenant } from "./types";
 import type { LeaseTenantFormValue } from "./schemas";
-import { buildTenantChanges } from "./utils";
+import {
+  buildTenantChanges,
+  getActivationBlockers,
+  getLatestLeftDate,
+} from "./utils";
 
 const tenant = (overrides: Partial<LeaseTenant> = {}): LeaseTenant => ({
   id: "tenant-1",
@@ -198,5 +202,116 @@ describe("buildTenantChanges", () => {
     expect(changes).toEqual([
       { userId: "user-1", isRepresentative: true, joinedDate: null },
     ]);
+  });
+});
+
+describe("getActivationBlockers", () => {
+  const today = "2026-10-25";
+  const room = { capacity: 2, roomStatus: "available" as const };
+  const draft = (
+    overrides: Partial<Parameters<typeof getActivationBlockers>[0]> = {},
+  ) => ({
+    status: "draft" as const,
+    endDate: null,
+    tenants: [tenant()],
+    ...overrides,
+  });
+  const messages = (...args: Parameters<typeof getActivationBlockers>) =>
+    getActivationBlockers(...args).map((blocker) => blocker.message);
+
+  it("returns no blockers when the lease can be activated", () => {
+    expect(getActivationBlockers(draft(), room, today)).toEqual([]);
+  });
+
+  it("blocks leases that are not drafts", () => {
+    expect(messages(draft({ status: "active" }), room, today)).toEqual([
+      "Only draft leases can be activated",
+    ]);
+  });
+
+  it("requires at least one tenant", () => {
+    expect(messages(draft({ tenants: [] }), room, today)).toEqual([
+      "Add at least one tenant",
+    ]);
+  });
+
+  it("requires exactly one representative", () => {
+    const none = [
+      tenant({ id: "tenant-1", isRepresentative: false }),
+      tenant({ id: "tenant-2", isRepresentative: false }),
+    ];
+    const two = [
+      tenant({ id: "tenant-1", isRepresentative: true }),
+      tenant({ id: "tenant-2", isRepresentative: true }),
+    ];
+
+    expect(messages(draft({ tenants: none }), room, today)).toEqual([
+      "Mark exactly one tenant as the representative",
+    ]);
+    expect(messages(draft({ tenants: two }), room, today)).toEqual([
+      "Mark exactly one tenant as the representative",
+    ]);
+  });
+
+  it("blocks when the tenants exceed the room capacity", () => {
+    const tenants = [
+      tenant({ id: "tenant-1" }),
+      tenant({ id: "tenant-2", isRepresentative: false }),
+      tenant({ id: "tenant-3", isRepresentative: false }),
+    ];
+
+    expect(messages(draft({ tenants }), room, today)).toEqual([
+      "The room allows at most 2 tenants",
+    ]);
+    expect(
+      getActivationBlockers(
+        draft({ tenants }),
+        { ...room, capacity: null },
+        today,
+      ),
+    ).toEqual([]);
+  });
+
+  it("requires the end date to be after today", () => {
+    const passed = ["The end date has already passed"];
+
+    expect(messages(draft({ endDate: "2026-10-24" }), room, today)).toEqual(
+      passed,
+    );
+    expect(messages(draft({ endDate: "2026-10-25" }), room, today)).toEqual(
+      passed,
+    );
+    expect(messages(draft({ endDate: "2026-10-26" }), room, today)).toEqual([]);
+    expect(messages(draft({ endDate: null }), room, today)).toEqual([]);
+  });
+
+  it("blocks when the room is under maintenance", () => {
+    expect(
+      getActivationBlockers(
+        draft(),
+        { ...room, roomStatus: "maintenance" },
+        today,
+      ),
+    ).toEqual([
+      { message: "The room is under maintenance", fixableInForm: false },
+    ]);
+  });
+
+  it("skips room checks while the room is unknown", () => {
+    expect(getActivationBlockers(draft(), undefined, today)).toEqual([]);
+  });
+});
+
+describe("getLatestLeftDate", () => {
+  it("is today once the lease has started", () => {
+    expect(getLatestLeftDate({ startDate: "2026-01-01" }, "2026-10-25")).toBe(
+      "2026-10-25",
+    );
+  });
+
+  it("is the start date when the lease has not started yet", () => {
+    expect(getLatestLeftDate({ startDate: "2026-12-01" }, "2026-10-25")).toBe(
+      "2026-12-01",
+    );
   });
 });

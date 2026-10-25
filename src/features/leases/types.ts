@@ -69,6 +69,11 @@ export type UpdateLeaseTenantPayload = {
   isDeleted?: boolean;
 };
 
+export type TerminateLeasePayload = {
+  reason: string;
+  leftDate?: string | null;
+};
+
 export type UpdateLeasePayload = Partial<{
   previousLeaseId: string | null;
   leaseCode: string;

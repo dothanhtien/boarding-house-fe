@@ -11,6 +11,8 @@ export const MAX_LEASE_TENANTS = 20;
 
 export const LEASE_CODE_MAX_LENGTH = 50;
 
+export const TERMINATION_REASON_MAX_LENGTH = 1000;
+
 export const LEASE_STATUS_OPTIONS: { value: LeaseStatus; label: string }[] = [
   { value: LeaseStatus.Draft, label: "Draft" },
   { value: LeaseStatus.Active, label: "Active" },
@@ -27,6 +29,3 @@ export const LeaseOrigin = {
 } as const;
 
 export type LeaseOrigin = (typeof LeaseOrigin)[keyof typeof LeaseOrigin];
-
-export const parseLeaseOrigin = (value: unknown): LeaseOrigin | undefined =>
-  value === LeaseOrigin.Room ? value : undefined;

@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { SquarePen, Trash2 } from "lucide-react";
+import { CircleCheck, CircleX, SquarePen, Trash2 } from "lucide-react";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import Badge from "@/components/ui/badge/Badge";
 import { InfoItem } from "@/components/ui/info-item/InfoItem";
@@ -11,13 +11,21 @@ import { ROUTES } from "@/config/routeDefinition";
 import { LeaseOrigin, LeaseStatus } from "@/features/leases/constants";
 import { useLease } from "@/features/leases/queries";
 import type { Lease } from "@/features/leases/types";
-import { formatLeaseTerm, isLeaseEditable } from "@/features/leases/utils";
+import {
+  formatLeaseTerm,
+  getActivationBlockers,
+  isLeaseEditable,
+  isLeaseTerminable,
+} from "@/features/leases/utils";
 import { useProperty } from "@/features/properties/queries";
+import { useRoom } from "@/features/rooms/queries";
 import { ChevronLeftIcon } from "@/icons";
 import { formatCurrency } from "@/utils/currency";
 import { DateFormat, formatDate } from "@/utils/date";
+import { ActivateLeaseDialog } from "./ActivateLeaseDialog";
 import { DeleteLeaseDialog } from "./DeleteLeaseDialog";
 import { LeaseStatusBadge } from "./LeaseStatusBadge";
+import { TerminateLeaseModal } from "./TerminateLeaseModal";
 
 interface LeaseDetailViewProps {
   leaseId: string;
@@ -92,10 +100,26 @@ const LeaseTenantsCard: React.FC<{ lease: Lease }> = ({ lease }) => (
 export function LeaseDetailView({ leaseId, origin }: LeaseDetailViewProps) {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isActivating, setIsActivating] = useState(false);
+  const [isTerminating, setIsTerminating] = useState(false);
   const { data: lease, isLoading, error } = useLease(leaseId);
   const { data: property } = useProperty(lease?.propertyId ?? "", {
     enabled: !!lease,
   });
+  const { data: room, isLoading: isRoomLoading } = useRoom(
+    lease?.roomId ?? "",
+    { enabled: !!lease },
+  );
+
+  const { activationBlockers, hasFormFixableBlocker } = useMemo(() => {
+    const blockers =
+      lease && isLeaseEditable(lease) ? getActivationBlockers(lease, room) : [];
+    return {
+      activationBlockers: blockers,
+      hasFormFixableBlocker: blockers.some((blocker) => blocker.fixableInForm),
+    };
+  }, [lease, room]);
+  const canActivate = !isRoomLoading && activationBlockers.length === 0;
 
   const roomPath = lease && ROUTES.roomDetail(lease.propertyId, lease.roomId);
   const isFromRoom = origin === LeaseOrigin.Room;
@@ -156,6 +180,15 @@ export function LeaseDetailView({ leaseId, origin }: LeaseDetailViewProps) {
 
                 {isLeaseEditable(lease) ? (
                   <div className="flex flex-col gap-3 sm:flex-row">
+                    <button
+                      type="button"
+                      onClick={() => setIsActivating(true)}
+                      disabled={!canActivate}
+                      className="shadow-theme-xs bg-brand-500 hover:bg-brand-600 focus-visible:ring-brand-500/20 disabled:bg-brand-300 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-white transition focus-visible:ring-3 focus-visible:outline-hidden disabled:cursor-not-allowed sm:w-auto"
+                    >
+                      <CircleCheck className="h-4 w-4" aria-hidden />
+                      Activate
+                    </button>
                     <Link
                       href={ROUTES.editLease(lease.id, origin)}
                       className="shadow-theme-xs inline-flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 hover:text-gray-800 sm:w-auto dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
@@ -172,12 +205,47 @@ export function LeaseDetailView({ leaseId, origin }: LeaseDetailViewProps) {
                       Delete
                     </button>
                   </div>
+                ) : isLeaseTerminable(lease) ? (
+                  <div className="flex flex-col items-start gap-3 sm:items-end">
+                    <button
+                      type="button"
+                      onClick={() => setIsTerminating(true)}
+                      className="shadow-theme-xs bg-error-500 hover:bg-error-600 focus-visible:ring-error-500/20 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-white transition focus-visible:ring-3 focus-visible:outline-hidden sm:w-auto"
+                    >
+                      <CircleX className="h-4 w-4" aria-hidden />
+                      Terminate
+                    </button>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Only draft leases can be edited or deleted.
+                    </p>
+                  </div>
                 ) : (
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     Only draft leases can be edited or deleted.
                   </p>
                 )}
               </div>
+
+              {activationBlockers.length > 0 && (
+                <div className="border-warning-500/30 bg-warning-50 dark:bg-warning-500/10 mt-6 rounded-lg border px-4 py-3">
+                  <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+                    This lease can&apos;t be activated yet:
+                  </p>
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-600 dark:text-gray-400">
+                    {activationBlockers.map((blocker) => (
+                      <li key={blocker.message}>{blocker.message}</li>
+                    ))}
+                  </ul>
+                  {hasFormFixableBlocker && (
+                    <Link
+                      href={ROUTES.editLease(lease.id, origin)}
+                      className={`mt-2 inline-block text-sm ${linkClassName}`}
+                    >
+                      Edit lease
+                    </Link>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="rounded-2xl border border-gray-200 p-5 lg:p-6 dark:border-gray-800">
@@ -261,6 +329,20 @@ export function LeaseDetailView({ leaseId, origin }: LeaseDetailViewProps) {
           </div>
         )}
       </div>
+
+      {lease && isActivating && (
+        <ActivateLeaseDialog
+          lease={lease}
+          onClose={() => setIsActivating(false)}
+        />
+      )}
+
+      {lease && isTerminating && (
+        <TerminateLeaseModal
+          lease={lease}
+          onClose={() => setIsTerminating(false)}
+        />
+      )}
 
       {lease && isDeleting && (
         <DeleteLeaseDialog
