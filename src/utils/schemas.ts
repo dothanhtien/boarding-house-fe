@@ -13,7 +13,7 @@ export const money = (label: string, { required, allowZero }: MoneyOptions) =>
     .refine(
       (value) =>
         value === "" ||
-        (!Number.isNaN(Number(value)) &&
+        (Number.isFinite(Number(value)) &&
           (allowZero ? Number(value) >= 0 : Number(value) > 0)),
       {
         message: allowZero
