@@ -1,4 +1,5 @@
 import React from "react";
+import { HttpStatus } from "@/enums/httpStatus";
 import { toast } from "sonner";
 import { ConfirmDeleteDialog } from "@/components/ui/confirm-delete-dialog/ConfirmDeleteDialog";
 import { useDeleteRoomAsset } from "@/features/room-assets/mutations";
@@ -17,12 +18,12 @@ export const DeleteRoomAssetDialog: React.FC<DeleteRoomAssetDialogProps> = ({
 }) => {
   const deleteRoomAssetMutation = useDeleteRoomAsset();
 
-  function handleClose() {
+  const handleClose = () => {
     deleteRoomAssetMutation.reset();
     onClose();
-  }
+  };
 
-  function handleConfirm() {
+  const handleConfirm = () => {
     deleteRoomAssetMutation.mutate(
       { roomId: asset.roomId, assetId: asset.id },
       {
@@ -32,7 +33,7 @@ export const DeleteRoomAssetDialog: React.FC<DeleteRoomAssetDialogProps> = ({
           toast.success("Asset deleted successfully");
         },
         onError: (error) => {
-          if (error.status === 404) {
+          if (error.status === HttpStatus.NotFound) {
             toast.error(error.message);
             handleClose();
             onDeleted?.();
@@ -40,7 +41,7 @@ export const DeleteRoomAssetDialog: React.FC<DeleteRoomAssetDialogProps> = ({
         },
       },
     );
-  }
+  };
 
   return (
     <ConfirmDeleteDialog

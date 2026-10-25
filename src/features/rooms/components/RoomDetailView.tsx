@@ -8,6 +8,7 @@ import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import { InfoItem } from "@/components/ui/info-item/InfoItem";
 import { ROUTES } from "@/config/routeDefinition";
 import { useProperty } from "@/features/properties/queries";
+import { RoomLeasesSection } from "@/features/leases/components/RoomLeasesSection";
 import { RoomAssetsSection } from "@/features/room-assets/components/RoomAssetsSection";
 import {
   ROOM_CATEGORY_IMAGES,
@@ -180,6 +181,8 @@ export function RoomDetailView({ propertyId, roomId }: RoomDetailViewProps) {
                 </div>
               </div>
             </div>
+
+            <RoomLeasesSection roomId={room.id} />
 
             <div className="rounded-2xl border border-gray-200 p-5 lg:p-6 dark:border-gray-800">
               <div className="mb-5 flex items-center gap-3 lg:mb-6">

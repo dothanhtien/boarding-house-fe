@@ -4,6 +4,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { ApiError } from "@/lib/axios";
+import { HttpStatus } from "@/enums/httpStatus";
 import type { UploadProgressHandler } from "@/utils/multipart";
 import { roomKeys } from "@/features/rooms/queries";
 import type { RoomDetails } from "@/features/rooms/types";
@@ -74,7 +75,7 @@ function useRefetchRoomOnNotFound() {
   const queryClient = useQueryClient();
 
   return (error: ApiError, roomId: string) => {
-    if (error.status === 404) {
+    if (error.status === HttpStatus.NotFound) {
       queryClient.invalidateQueries({ queryKey: roomKeys.detail(roomId) });
     }
   };
@@ -277,7 +278,7 @@ export function useUpdateRoomAssetConditionHistory() {
       }
     },
     onError(error, { roomId, assetId }) {
-      if (error.status === 409) {
+      if (error.status === HttpStatus.Conflict) {
         queryClient.invalidateQueries({
           queryKey: roomAssetKeys.histories(assetId),
         });

@@ -148,7 +148,7 @@ export function PropertiesGrid({
                 <h3 className="text-theme-sm font-semibold text-gray-800 dark:text-white/90">
                   <Link
                     href={ROUTES.propertyRooms(property.id)}
-                    className="hover:text-brand-500 dark:hover:text-brand-400"
+                    className="text-brand-500 hover:text-brand-600"
                   >
                     {property.name}
                   </Link>

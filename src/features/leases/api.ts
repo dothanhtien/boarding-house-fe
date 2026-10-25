@@ -1,0 +1,37 @@
+import { api } from "@/lib/axios";
+import {
+  CreateLeasePayload,
+  GetLeasesParams,
+  GetLeasesResponse,
+  Lease,
+  UpdateLeasePayload,
+} from "./types";
+
+export const leasesApi = {
+  async getLeases(
+    params: GetLeasesParams,
+    signal?: AbortSignal,
+  ): Promise<GetLeasesResponse> {
+    const res = await api.get<GetLeasesResponse>("/leases", { params, signal });
+    return res.data;
+  },
+
+  async getLease(id: string, signal?: AbortSignal): Promise<Lease> {
+    const res = await api.get<Lease>(`/leases/${id}`, { signal });
+    return res.data;
+  },
+
+  async createLease(payload: CreateLeasePayload): Promise<Lease> {
+    const res = await api.post<Lease>("/leases", payload);
+    return res.data;
+  },
+
+  async updateLease(id: string, payload: UpdateLeasePayload): Promise<Lease> {
+    const res = await api.patch<Lease>(`/leases/${id}`, payload);
+    return res.data;
+  },
+
+  async deleteLease(id: string): Promise<void> {
+    await api.delete(`/leases/${id}`);
+  },
+};

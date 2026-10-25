@@ -6,7 +6,7 @@ import { Tooltip } from "@/components/ui/tooltip/Tooltip";
 import type { ImageViewerItem } from "@/components/ui/image-viewer/ImageViewer";
 import type { RoomAssetConditionHistory } from "@/features/room-assets/types";
 import { useActorName } from "@/features/room-assets/useActorName";
-import { formatDate } from "@/utils/date";
+import { DateFormat, formatDate } from "@/utils/date";
 import { AssetConditionBadge } from "./AssetConditionBadge";
 
 interface ConditionHistoryTimelineProps {
@@ -67,12 +67,12 @@ export const ConditionHistoryTimeline: React.FC<
             </div>
 
             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              {formatDate(history.changedAt, "YYYY-MM-DD HH:mm")} ·{" "}
+              {formatDate(history.changedAt, DateFormat.DateTime)} ·{" "}
               {actorName(history.changedBy)}
               {history.updatedAt && (
                 <>
                   {" "}
-                  · edited {formatDate(history.updatedAt, "YYYY-MM-DD HH:mm")}
+                  · edited {formatDate(history.updatedAt, DateFormat.DateTime)}
                 </>
               )}
             </p>

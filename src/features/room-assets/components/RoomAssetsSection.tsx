@@ -148,7 +148,7 @@ export const RoomAssetsSection: React.FC<RoomAssetsSectionProps> = ({
                       <button
                         type="button"
                         onClick={() => setDrawerAssetId(asset.id)}
-                        className="hover:text-brand-500 block max-w-full cursor-pointer truncate text-left text-sm font-medium text-gray-800 dark:text-white/90"
+                        className="text-brand-500 hover:text-brand-600 block max-w-full cursor-pointer truncate text-left text-sm font-medium"
                       >
                         {asset.name}
                       </button>

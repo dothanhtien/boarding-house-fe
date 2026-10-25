@@ -1,7 +1,7 @@
 import type { ComponentType, SVGProps } from "react";
-import { BuildingsIcon, GridIcon, HomeIcon, UserIcon } from "@/icons";
+import { BuildingsIcon, DocsIcon, GridIcon, HomeIcon, UserIcon } from "@/icons";
 import { ROUTES } from "@/config/routeDefinition";
-import { RoleSlugs } from "@/config/roles";
+import { RoleSlugs } from "@/enums/roles";
 
 export type NavItem = {
   name: string;
@@ -34,6 +34,12 @@ export const propertiesNavItem: NavItem = {
   path: ROUTES.properties,
 };
 
+export const leasesNavItem: NavItem = {
+  icon: DocsIcon,
+  name: "Leases",
+  path: ROUTES.leases,
+};
+
 export const organizationDetailNavItem = (organizationId: string): NavItem => {
   return {
     icon: BuildingsIcon,
@@ -62,11 +68,13 @@ export const ROLE_NAV_ITEMS: Record<string, NavItem[]> = {
     dashboardNavItem,
     organizationsNavItem,
     propertiesNavItem,
+    leasesNavItem,
   ],
   [RoleSlugs.OrganizationStaff]: [
     dashboardNavItem,
     organizationsNavItem,
     propertiesNavItem,
+    leasesNavItem,
   ],
 };
 

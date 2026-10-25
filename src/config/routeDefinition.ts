@@ -11,6 +11,13 @@ export const ROUTES = {
     `/properties/${propertyId}/rooms/${roomId}`,
   editRoom: (propertyId: string, roomId: string) =>
     `/properties/${propertyId}/rooms/${roomId}/edit`,
+  leases: "/leases",
+  createLease: (roomId?: string) =>
+    roomId ? `/leases/new?roomId=${encodeURIComponent(roomId)}` : "/leases/new",
+  leaseDetail: (id: string, origin?: string) =>
+    `/leases/${id}${origin ? `?origin=${encodeURIComponent(origin)}` : ""}`,
+  editLease: (id: string, origin?: string) =>
+    `/leases/${id}/edit${origin ? `?origin=${encodeURIComponent(origin)}` : ""}`,
   signIn: "/signin",
   signUp: "/signup",
 };
