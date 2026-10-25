@@ -4,6 +4,7 @@ import {
   GetPropertiesParams,
   GetPropertiesResponse,
   Property,
+  PropertyLookupItem,
   UpdatePropertyPayload,
 } from "./types";
 
@@ -14,6 +15,13 @@ export const propertiesApi = {
   ): Promise<GetPropertiesResponse> {
     const res = await api.get<GetPropertiesResponse>("/properties", {
       params,
+      signal,
+    });
+    return res.data;
+  },
+
+  async lookupProperties(signal?: AbortSignal): Promise<PropertyLookupItem[]> {
+    const res = await api.get<PropertyLookupItem[]>("/properties/lookup", {
       signal,
     });
     return res.data;

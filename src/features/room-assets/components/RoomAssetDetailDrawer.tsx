@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { HttpStatus } from "@/enums/httpStatus";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ClipboardPlus, SquarePen } from "lucide-react";
@@ -15,7 +16,7 @@ import { roomKeys } from "@/features/rooms/queries";
 import { useRoomAssetConditionHistories } from "@/features/room-assets/queries";
 import type { RoomDetailsAsset } from "@/features/room-assets/types";
 import { formatCurrency } from "@/utils/currency";
-import { formatDate } from "@/utils/date";
+import { DateFormat, formatDate } from "@/utils/date";
 import { AssetConditionBadge } from "./AssetConditionBadge";
 import { ConditionHistoryTimeline } from "./ConditionHistoryTimeline";
 import { CurrentConditionEditor } from "./CurrentConditionEditor";
@@ -47,7 +48,7 @@ export const RoomAssetDetailDrawer: React.FC<RoomAssetDetailDrawerProps> = ({
   } = useRoomAssetConditionHistories(asset.roomId, asset.id);
 
   useEffect(() => {
-    if (error?.status !== 404) return;
+    if (error?.status !== HttpStatus.NotFound) return;
     toast.error("This asset no longer exists.");
     queryClient.invalidateQueries({ queryKey: roomKeys.detail(asset.roomId) });
     onClose();
@@ -93,7 +94,7 @@ export const RoomAssetDetailDrawer: React.FC<RoomAssetDetailDrawerProps> = ({
               />
               <InfoItem
                 label="Purchase date"
-                value={formatDate(asset.purchaseDate, "YYYY-MM-DD")}
+                value={formatDate(asset.purchaseDate, DateFormat.Date)}
               />
               <InfoItem label="Added" value={formatDate(asset.createdAt)} />
               {asset.splitFromAssetId && (
@@ -121,7 +122,7 @@ export const RoomAssetDetailDrawer: React.FC<RoomAssetDetailDrawerProps> = ({
                 Loading condition history...
               </p>
             )}
-            {error && error.status !== 404 && (
+            {error && error.status !== HttpStatus.NotFound && (
               <p className="text-error-500 text-sm">{error.message}</p>
             )}
             {latest && (

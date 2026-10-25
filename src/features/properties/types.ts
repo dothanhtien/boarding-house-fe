@@ -23,6 +23,8 @@ export type GetPropertiesParams = ListQueryParams;
 
 export type GetPropertiesResponse = PagedResult<Property>;
 
+export type PropertyLookupItem = Pick<Property, "id" | "name">;
+
 export type CreatePropertyPayload = {
   name: string;
   description?: string | null;

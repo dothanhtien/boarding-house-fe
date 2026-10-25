@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { HttpStatus } from "@/enums/httpStatus";
 import type { ApiError } from "@/lib/axios";
 import { roomAssetsApi } from "./api";
 import type { RoomAssetConditionHistory } from "./types";
@@ -17,6 +18,7 @@ export function useRoomAssetConditionHistories(
     queryKey: roomAssetKeys.histories(assetId),
     queryFn: ({ signal }) =>
       roomAssetsApi.getConditionHistories(roomId, assetId, signal),
-    retry: (failureCount, error) => error.status !== 404 && failureCount < 1,
+    retry: (failureCount, error) =>
+      error.status !== HttpStatus.NotFound && failureCount < 1,
   });
 }

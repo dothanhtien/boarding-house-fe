@@ -28,11 +28,15 @@ export function useListPageState() {
     setPage(Math.min(Math.max(nextPage, 1), totalPages));
   }
 
-  function handleItemDeleted(remainingOnPage: number, refetch: () => void) {
+  function resetPage() {
+    setPage(1);
+  }
+
+  function handleItemDeleted(remainingOnPage: number, refetch?: () => void) {
     if (page > 1 && remainingOnPage === 1) {
       setPage((prev) => prev - 1);
     } else {
-      refetch();
+      refetch?.();
     }
   }
 
@@ -45,5 +49,6 @@ export function useListPageState() {
     handleSortChange,
     handlePageChange,
     handleItemDeleted,
+    resetPage,
   };
 }

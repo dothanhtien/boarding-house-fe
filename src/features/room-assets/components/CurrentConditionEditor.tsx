@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
+import { HttpStatus } from "@/enums/httpStatus";
 import Image from "next/image";
 import { toast } from "sonner";
 import { ImagePlus, Undo2, X } from "lucide-react";
@@ -21,7 +22,7 @@ import type {
   UpdateRoomAssetConditionHistoryPayload,
 } from "@/features/room-assets/types";
 import { formatSavingLabel } from "@/features/room-assets/utils";
-import { formatDate } from "@/utils/date";
+import { DateFormat, formatDate } from "@/utils/date";
 import { AssetConditionBadge } from "./AssetConditionBadge";
 
 interface CurrentConditionEditorProps {
@@ -108,7 +109,7 @@ export const CurrentConditionEditor: React.FC<CurrentConditionEditorProps> = ({
       {
         onSuccess: () => toast.success("Condition photos updated"),
         onError: (error) => {
-          if (error.status === 409) {
+          if (error.status === HttpStatus.Conflict) {
             toast.error(
               "A newer condition was recorded in the meantime, so this entry can no longer be edited. The history has been refreshed.",
             );
@@ -137,7 +138,7 @@ export const CurrentConditionEditor: React.FC<CurrentConditionEditorProps> = ({
       <div className="mb-4 flex items-center gap-3">
         <AssetConditionBadge condition={history.newCondition} />
         <span className="text-sm text-gray-500 dark:text-gray-400">
-          since {formatDate(history.changedAt, "YYYY-MM-DD HH:mm")}
+          since {formatDate(history.changedAt, DateFormat.DateTime)}
         </span>
       </div>
 
@@ -253,7 +254,7 @@ export const CurrentConditionEditor: React.FC<CurrentConditionEditorProps> = ({
       </div>
 
       {updateHistoryMutation.error &&
-        updateHistoryMutation.error.status !== 409 && (
+        updateHistoryMutation.error.status !== HttpStatus.Conflict && (
           <p className="text-error-500 mt-2 text-sm">
             {updateHistoryMutation.error.message}
           </p>

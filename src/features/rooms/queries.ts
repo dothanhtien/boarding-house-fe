@@ -9,17 +9,22 @@ export const roomKeys = {
   detail: (id: string) => [...roomKeys.all, "detail", id] as const,
 };
 
-export function useRooms(params: GetRoomsParams) {
+export function useRooms(
+  params: GetRoomsParams,
+  options: { enabled?: boolean } = {},
+) {
   return useQuery({
     queryKey: roomKeys.list(params),
     queryFn: ({ signal }) => roomsApi.getRooms(params, signal),
     placeholderData: keepPreviousData,
+    enabled: options.enabled ?? true,
   });
 }
 
-export function useRoom(id: string) {
+export function useRoom(id: string, options: { enabled?: boolean } = {}) {
   return useQuery({
     queryKey: roomKeys.detail(id),
     queryFn: ({ signal }) => roomsApi.getRoom(id, signal),
+    enabled: options.enabled ?? true,
   });
 }

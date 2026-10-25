@@ -5,6 +5,7 @@ import {
   MEDIA_MAX_FILE_SIZE_BYTES,
   MEDIA_MAX_FILES_PER_REQUEST,
 } from "@/config/media";
+import { money } from "@/utils/schemas";
 import type { AssetCondition } from "./types";
 
 export const imageFilesSchema = z
@@ -48,16 +49,10 @@ const roomAssetBaseSchema = z.object({
       message: "Quantity must be a whole number of at least 1",
     }),
   purchaseDate: z.string(),
-  purchaseUnitPrice: z
-    .string()
-    .refine(
-      (value) =>
-        value === "" || (!Number.isNaN(Number(value)) && Number(value) > 0),
-      { message: "Purchase unit price must be greater than 0" },
-    )
-    .refine((value) => value === "" || /^\d+(\.\d{1,2})?$/.test(value), {
-      message: "Purchase unit price must have at most 2 decimal places",
-    }),
+  purchaseUnitPrice: money("Purchase unit price", {
+    required: false,
+    allowZero: false,
+  }),
   note: z.string(),
 });
 

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { money } from "@/utils/schemas";
 
 const optionalWholeNumber = (label: string, min: number) =>
   z
@@ -19,12 +20,6 @@ const optionalPositiveNumber = (label: string) =>
     return !Number.isNaN(Number(value)) && Number(value) > 0;
   }, `${label} must be greater than 0`);
 
-const optionalNonNegativeNumber = (label: string) =>
-  z.string().refine((value) => {
-    if (value === "") return true;
-    return !Number.isNaN(Number(value)) && Number(value) >= 0;
-  }, `${label} must not be negative`);
-
 const roomBaseSchema = z.object({
   roomNumber: z
     .string()
@@ -35,8 +30,8 @@ const roomBaseSchema = z.object({
   floorNumber: optionalWholeNumber("Floor number", 0),
   area: optionalPositiveNumber("Area"),
   capacity: optionalWholeNumber("Capacity", 1),
-  monthlyRent: optionalPositiveNumber("Monthly rent"),
-  depositAmount: optionalNonNegativeNumber("Deposit amount"),
+  monthlyRent: money("Monthly rent", { required: false, allowZero: false }),
+  depositAmount: money("Deposit amount", { required: false, allowZero: true }),
   note: z.string(),
 });
 
