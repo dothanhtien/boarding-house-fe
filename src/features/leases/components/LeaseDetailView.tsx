@@ -106,10 +106,11 @@ export function LeaseDetailView({ leaseId, origin }: LeaseDetailViewProps) {
   const { data: property } = useProperty(lease?.propertyId ?? "", {
     enabled: !!lease,
   });
-  const { data: room, isLoading: isRoomLoading } = useRoom(
-    lease?.roomId ?? "",
-    { enabled: !!lease },
-  );
+  const {
+    data: room,
+    isLoading: isRoomLoading,
+    error: roomError,
+  } = useRoom(lease?.roomId ?? "", { enabled: !!lease });
 
   const { activationBlockers, hasFormFixableBlocker } = useMemo(() => {
     const blockers =
@@ -119,7 +120,8 @@ export function LeaseDetailView({ leaseId, origin }: LeaseDetailViewProps) {
       hasFormFixableBlocker: blockers.some((blocker) => blocker.fixableInForm),
     };
   }, [lease, room]);
-  const canActivate = !isRoomLoading && activationBlockers.length === 0;
+  const canActivate =
+    !isRoomLoading && !roomError && activationBlockers.length === 0;
 
   const roomPath = lease && ROUTES.roomDetail(lease.propertyId, lease.roomId);
   const isFromRoom = origin === LeaseOrigin.Room;
