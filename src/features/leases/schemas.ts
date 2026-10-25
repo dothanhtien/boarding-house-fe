@@ -1,6 +1,13 @@
 import { z } from "zod";
+import { getUtcToday } from "@/utils/date";
 import { money } from "@/utils/schemas";
-import { LEASE_CODE_MAX_LENGTH, MAX_LEASE_TENANTS } from "./constants";
+import {
+  LEASE_CODE_MAX_LENGTH,
+  MAX_LEASE_TENANTS,
+  TERMINATION_REASON_MAX_LENGTH,
+} from "./constants";
+import type { Lease } from "./types";
+import { getLatestLeftDate } from "./utils";
 
 const leaseTenantSchema = z.object({
   tenantId: z.string().optional(),
@@ -108,4 +115,59 @@ export type LeaseTermsFormValues = Pick<
   | "monthlyRent"
   | "depositAmount"
   | "tenants"
+>;
+
+export const buildTerminateLeaseSchema = (
+  lease: Pick<Lease, "startDate" | "tenants">,
+  today: string = getUtcToday(),
+) => {
+  const startDate = lease.startDate.slice(0, 10);
+  const latestLeftDate = getLatestLeftDate(lease, today);
+
+  return z
+    .object({
+      reason: z
+        .string()
+        .trim()
+        .min(1, "Reason is required")
+        .max(
+          TERMINATION_REASON_MAX_LENGTH,
+          `Reason exceeds ${TERMINATION_REASON_MAX_LENGTH} characters`,
+        ),
+      leftDate: z.string().min(1, "Left date is required"),
+    })
+    .superRefine((values, ctx) => {
+      const { leftDate } = values;
+      if (!leftDate) return;
+
+      if (leftDate < startDate || leftDate > latestLeftDate) {
+        ctx.addIssue({
+          code: "custom",
+          message:
+            startDate === latestLeftDate
+              ? `Left date must be ${startDate}`
+              : `Left date must be between ${startDate} and ${latestLeftDate}`,
+          path: ["leftDate"],
+        });
+        return;
+      }
+
+      const joinedLater = lease.tenants.find(
+        (tenant) =>
+          (tenant.leftDate === null || tenant.leftDate > leftDate) &&
+          tenant.joinedDate !== null &&
+          tenant.joinedDate > leftDate,
+      );
+      if (joinedLater) {
+        ctx.addIssue({
+          code: "custom",
+          message: `Left date must not be before ${joinedLater.fullName}'s joined date ${joinedLater.joinedDate}`,
+          path: ["leftDate"],
+        });
+      }
+    });
+};
+
+export type TerminateLeaseFormValues = z.infer<
+  ReturnType<typeof buildTerminateLeaseSchema>
 >;

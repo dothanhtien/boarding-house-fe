@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LeaseDetailView } from "@/features/leases/components/LeaseDetailView";
-import { parseLeaseOrigin } from "@/features/leases/constants";
+import { parseLeaseOrigin } from "@/features/leases/utils";
 
 export const metadata: Metadata = {
   title: "Lease Details | Boarding House",

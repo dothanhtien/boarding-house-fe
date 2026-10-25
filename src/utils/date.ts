@@ -1,4 +1,7 @@
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
 
 export const DateFormat = {
   Date: "YYYY-MM-DD",
@@ -15,3 +18,5 @@ export function formatDate(
 ) {
   return value ? dayjs(value).format(format) : placeholder;
 }
+
+export const getUtcToday = () => dayjs.utc().format(DateFormat.Date);
