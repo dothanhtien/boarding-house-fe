@@ -6,10 +6,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import { ROUTES } from "@/config/routeDefinition";
+import { leaseUtilityServiceKeys } from "@/features/lease-utility-services/queries";
+import { leaseKeys } from "@/features/leases/queries";
 import { organizationKeys } from "@/features/organizations/queries";
 import { propertyKeys } from "@/features/properties/queries";
 import { roomKeys } from "@/features/rooms/queries";
 import { userKeys } from "@/features/users/queries";
+import { utilityServiceKeys } from "@/features/utility-services/queries";
 import { useUserRole } from "@/hooks/useUserRole";
 import { ChevronDownIcon } from "@/icons";
 import { useOrganizationStore } from "@/store/organizationStore";
@@ -72,6 +75,11 @@ export const OrganizationSwitcher: React.FC = () => {
               queryClient.removeQueries({ queryKey: propertyKeys.all });
               queryClient.removeQueries({ queryKey: roomKeys.all });
               queryClient.removeQueries({ queryKey: userKeys.all });
+              queryClient.removeQueries({ queryKey: leaseKeys.all });
+              queryClient.removeQueries({ queryKey: utilityServiceKeys.all });
+              queryClient.removeQueries({
+                queryKey: leaseUtilityServiceKeys.all,
+              });
               router.push(ROUTES.dashboard);
             }}
             baseClassName=""

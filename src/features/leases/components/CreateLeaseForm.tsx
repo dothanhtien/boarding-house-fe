@@ -13,6 +13,7 @@ import type { ApiError } from "@/lib/axios";
 import { applyApiFormErrors } from "@/utils/formErrors";
 import { formatCurrency } from "@/utils/currency";
 import { toOptionalNumber } from "@/utils/forms";
+import { LeaseUtilityServicesFields } from "@/features/lease-utility-services/components/LeaseUtilityServicesFields";
 import { LeaseOrigin } from "@/features/leases/constants";
 import { useCreateLease } from "@/features/leases/mutations";
 import {
@@ -43,7 +44,16 @@ const buildDefaultValues = (room?: Room): CreateLeaseFormValues => ({
   monthlyRent: "",
   depositAmount: "",
   tenants: [],
+  utilityServices: [],
 });
+
+const NESTED_FORM_FIELDS = [
+  "tenants.*.joinedDate",
+  "utilityServices.*",
+  "utilityServices.*.serviceId",
+  "utilityServices.*.unitPriceOverride",
+  "utilityServices.*.quantity",
+];
 
 const priceHint = (label: string, room?: Room, amount?: number | null) => {
   if (!room) return `Leave blank to use the room's listed ${label}.`;
@@ -122,6 +132,12 @@ export const CreateLeaseForm: React.FC<CreateLeaseFormProps> = ({
           isRepresentative: tenant.isRepresentative,
           joinedDate: tenant.joinedDate || null,
         })),
+        utilityServices: values.utilityServices.map((service) => ({
+          serviceId: service.serviceId,
+          unitPriceOverride:
+            toOptionalNumber(service.unitPriceOverride) ?? null,
+          quantity: Number(service.quantity),
+        })),
       },
       {
         onSuccess: (lease) => {
@@ -141,6 +157,7 @@ export const CreateLeaseForm: React.FC<CreateLeaseFormProps> = ({
             ) as (keyof CreateLeaseFormValues)[],
             form.setError,
             setGeneralError,
+            NESTED_FORM_FIELDS,
           );
         },
       },
@@ -201,6 +218,12 @@ export const CreateLeaseForm: React.FC<CreateLeaseFormProps> = ({
         <div className="mt-8 border-t border-gray-200 pt-6 dark:border-gray-800">
           <LeaseTenantsFields capacity={selectedRoom?.capacity} />
         </div>
+
+        {selectedRoom && (
+          <div className="mt-8 border-t border-gray-200 pt-6 dark:border-gray-800">
+            <LeaseUtilityServicesFields propertyId={selectedRoom.propertyId} />
+          </div>
+        )}
 
         <div className="mt-8 flex items-center justify-end gap-3">
           <Button

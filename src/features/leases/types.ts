@@ -1,4 +1,5 @@
 import type { LeaseStatus } from "./constants";
+import type { CreateLeaseUtilityServicePayload } from "@/features/lease-utility-services/types";
 import { ListQueryParams, PagedResult } from "@/types";
 
 export type LeaseTenant = {
@@ -59,6 +60,7 @@ export type CreateLeasePayload = {
   monthlyRent?: number | null;
   depositAmount?: number | null;
   tenants?: CreateLeaseTenantPayload[];
+  utilityServices?: CreateLeaseUtilityServicePayload[];
 };
 
 export type UpdateLeaseTenantPayload = {

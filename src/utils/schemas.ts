@@ -24,3 +24,11 @@ export const money = (label: string, { required, allowZero }: MoneyOptions) =>
     .refine((value) => value === "" || MONEY_PATTERN.test(value), {
       message: `${label} must have at most 2 decimal places`,
     });
+
+export const requiredChoice = <T extends z.ZodType<string>>(
+  schema: T,
+  label: string,
+) =>
+  z
+    .union([schema, z.literal("")])
+    .refine((value) => value !== "", { message: `${label} is required` });

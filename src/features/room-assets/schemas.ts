@@ -5,7 +5,7 @@ import {
   MEDIA_MAX_FILE_SIZE_BYTES,
   MEDIA_MAX_FILES_PER_REQUEST,
 } from "@/config/media";
-import { money } from "@/utils/schemas";
+import { money, requiredChoice } from "@/utils/schemas";
 import type { AssetCondition } from "./types";
 
 export const imageFilesSchema = z
@@ -71,9 +71,7 @@ const assetConditionSchema = z.enum(["good", "damaged", "broken"], {
 });
 
 export const recordConditionSchema = z.object({
-  newCondition: z
-    .union([assetConditionSchema, z.literal("")])
-    .refine((value) => value !== "", { message: "Condition is required" }),
+  newCondition: requiredChoice(assetConditionSchema, "Condition"),
   note: z.string(),
   files: imageFilesSchema,
 });

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { getUtcToday } from "@/utils/date";
+import { leaseUtilityServiceSelectionSchema } from "@/features/lease-utility-services/schemas";
 import { money } from "@/utils/schemas";
 import {
   LEASE_CODE_MAX_LENGTH,
@@ -79,6 +80,7 @@ export const createLeaseSchema = z
       required: false,
       allowZero: true,
     }),
+    utilityServices: z.array(leaseUtilityServiceSelectionSchema),
   })
   .superRefine(refineDates);
 

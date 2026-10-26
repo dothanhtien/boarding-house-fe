@@ -65,6 +65,7 @@ export const LeaseRoomFields: React.FC = () => {
                 field.onChange(value);
                 setValue("roomId", "", { shouldValidate: false });
                 setValue("previousLeaseId", "");
+                setValue("utilityServices", []);
               }}
             />
           )}
