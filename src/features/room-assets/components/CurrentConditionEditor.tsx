@@ -107,7 +107,7 @@ export const CurrentConditionEditor: React.FC<CurrentConditionEditorProps> = ({
         onUploadProgress: newFiles.length > 0 ? setUploadProgress : undefined,
       },
       {
-        onSuccess: () => toast.success("Condition photos updated"),
+        onSuccess: () => toast.success("Condition photos updated successfully"),
         onError: (error) => {
           if (error.status === HttpStatus.Conflict) {
             toast.error(

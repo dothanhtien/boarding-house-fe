@@ -8,6 +8,7 @@ import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import Badge from "@/components/ui/badge/Badge";
 import { InfoItem } from "@/components/ui/info-item/InfoItem";
 import { ROUTES } from "@/config/routeDefinition";
+import { LeaseUtilityServicesCard } from "@/features/lease-utility-services/components/LeaseUtilityServicesCard";
 import { LeaseOrigin, LeaseStatus } from "@/features/leases/constants";
 import { useLease } from "@/features/leases/queries";
 import type { Lease } from "@/features/leases/types";
@@ -328,6 +329,8 @@ export function LeaseDetailView({ leaseId, origin }: LeaseDetailViewProps) {
             </div>
 
             <LeaseTenantsCard lease={lease} />
+
+            <LeaseUtilityServicesCard lease={lease} />
           </div>
         )}
       </div>
