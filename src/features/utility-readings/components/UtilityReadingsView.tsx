@@ -6,6 +6,7 @@ import Checkbox from "@/components/form/input/Checkbox";
 import Label from "@/components/form/Label";
 import { Select } from "@/components/form/Select";
 import Pagination from "@/components/tables/Pagination";
+import Button from "@/components/ui/button/Button";
 import { SearchInput } from "@/components/ui/search-input/SearchInput";
 import { ROUTES } from "@/config/routeDefinition";
 import { usePropertyLookup } from "@/features/properties/queries";
@@ -63,8 +64,14 @@ export const UtilityReadingsView: React.FC<UtilityReadingsViewProps> = ({
   const { page, search, setSearch, handlePageChange, resetPage } =
     useListPageState();
 
-  const { data: properties = [], isLoading: isLoadingProperties } =
-    usePropertyLookup();
+  const {
+    data: propertiesData,
+    isFetching: isFetchingProperties,
+    error: propertiesError,
+    refetch: refetchProperties,
+  } = usePropertyLookup();
+  const properties = propertiesData ?? [];
+  const hasProperties = propertiesData !== undefined;
 
   const propertyId = properties.some(
     (property) => property.id === selectedPropertyId,
@@ -86,20 +93,36 @@ export const UtilityReadingsView: React.FC<UtilityReadingsViewProps> = ({
   const rooms = data?.items ?? [];
 
   useEffect(() => {
-    if (isLoadingProperties) return;
+    if (!hasProperties) return;
     window.history.replaceState(
       null,
       "",
       ROUTES.utilityReadings({ propertyId, month }),
     );
-  }, [isLoadingProperties, propertyId, month]);
+  }, [hasProperties, propertyId, month]);
 
   const renderContent = () => {
-    if (!propertyId && isLoadingProperties) return <RoomsSkeleton />;
+    if (!hasProperties && propertiesError) {
+      return (
+        <div className="flex flex-col items-start gap-3">
+          <p className="text-error-500 text-sm">{propertiesError.message}</p>
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            disabled={isFetchingProperties}
+            onClick={() => refetchProperties()}
+          >
+            {isFetchingProperties ? "Retrying..." : "Try again"}
+          </Button>
+        </div>
+      );
+    }
+    if (!hasProperties) return <RoomsSkeleton />;
     if (!propertyId) {
       return (
         <EmptyMessage>
-          {!isLoadingProperties && properties.length === 0
+          {properties.length === 0
             ? "There are no properties yet."
             : "Select a property to start recording meter readings."}
         </EmptyMessage>
@@ -124,12 +147,14 @@ export const UtilityReadingsView: React.FC<UtilityReadingsViewProps> = ({
         {isPlaceholderData && (
           <div className="absolute inset-0 z-10 bg-white/40 dark:bg-gray-900/40" />
         )}
-        <div className={GRID_CLASSES}>
+        <div className={GRID_CLASSES} inert={isPlaceholderData}>
           {rooms.map((room) => (
             <RoomReadingTile
               key={room.roomId}
               room={room}
-              onClick={() => setOpenRoomId(room.roomId)}
+              onClick={() => {
+                if (!isPlaceholderData) setOpenRoomId(room.roomId);
+              }}
             />
           ))}
         </div>

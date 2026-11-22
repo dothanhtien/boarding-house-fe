@@ -18,15 +18,17 @@ export function useRecordRoomUtilityReadings() {
   >({
     mutationFn: ({ roomId, payload }) =>
       utilityReadingsApi.recordRoomReadings(roomId, payload),
-    onSuccess(data, { roomId, payload }) {
+    async onSuccess(data, { roomId, payload }) {
+      const roomMetersKey = utilityReadingKeys.roomMeters(
+        roomId,
+        payload.readingMonth,
+      );
+      await queryClient.cancelQueries({ queryKey: roomMetersKey, exact: true });
       queryClient.invalidateQueries({
         queryKey: utilityReadingKeys.roomMetersAll(),
         refetchType: "none",
       });
-      queryClient.setQueryData(
-        utilityReadingKeys.roomMeters(roomId, payload.readingMonth),
-        data,
-      );
+      queryClient.setQueryData(roomMetersKey, data);
       queryClient.invalidateQueries({
         queryKey: utilityReadingKeys.roomLists(),
       });

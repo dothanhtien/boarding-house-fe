@@ -148,6 +148,7 @@ export const RoomReadingsModal: React.FC<RoomReadingsModalProps> = ({
   };
 
   const handleReadOnChange = (nextReadOn: string) => {
+    if (isPending) return;
     onReadOnChange(nextReadOn);
     const revalidated: Record<string, CellErrors> = {};
     for (const cell of cells) {
@@ -295,6 +296,7 @@ export const RoomReadingsModal: React.FC<RoomReadingsModalProps> = ({
                 label="Read on"
                 placeholder="Today"
                 clearable
+                disabled={isPending}
                 value={readOn}
                 minDate={readOnRange.min}
                 maxDate={readOnRange.max}

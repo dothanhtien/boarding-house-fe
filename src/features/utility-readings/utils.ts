@@ -149,7 +149,7 @@ export type CellErrors = {
 export const hasCellErrors = (errors: CellErrors | undefined) =>
   !!errors && Object.values(errors).some(Boolean);
 
-const MAX_INTEGER_DIGITS = 16;
+const MAX_INTEGER_DIGITS = 13;
 
 function validateMeterNumber(input: string): {
   value?: number;

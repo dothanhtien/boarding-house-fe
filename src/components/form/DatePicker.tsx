@@ -7,6 +7,20 @@ import { CalenderIcon } from "../../icons";
 import Hook = flatpickr.Options.Hook;
 import DateOption = flatpickr.Options.DateOption;
 
+function syncMobileBound(
+  instance: flatpickr.Instance,
+  attribute: "min" | "max",
+  date: Date | undefined,
+) {
+  const input = instance.mobileInput;
+  if (!input) return;
+  if (date && instance.mobileFormatStr) {
+    input[attribute] = instance.formatDate(date, instance.mobileFormatStr);
+  } else {
+    input.removeAttribute(attribute);
+  }
+}
+
 type PropsType = {
   id: string;
   mode?: "single" | "multiple" | "range" | "time";
@@ -44,6 +58,7 @@ export default function DatePicker({
   const instanceRef = useRef<flatpickr.Instance | null>(null);
   const onChangeRef = useRef(onChange);
   const onBlurRef = useRef(onBlur);
+  const boundsRef = useRef({ minDate, maxDate });
   const initialDateRef = useRef(value ?? defaultDate);
   const [hasValue, setHasValue] = useState(() => !!(value ?? defaultDate));
   const showClear =
@@ -57,6 +72,7 @@ export default function DatePicker({
   useEffect(() => {
     onChangeRef.current = onChange;
     onBlurRef.current = onBlur;
+    boundsRef.current = { minDate, maxDate };
   });
 
   useEffect(() => {
@@ -69,6 +85,8 @@ export default function DatePicker({
       monthSelectorType: "static",
       dateFormat: "Y-m-d",
       defaultDate: initialDateRef.current || undefined,
+      minDate: boundsRef.current.minDate,
+      maxDate: boundsRef.current.maxDate,
       onChange: (selectedDates, ...rest) => {
         setHasValue(selectedDates.length > 0);
         const handler = onChangeRef.current;
@@ -97,12 +115,22 @@ export default function DatePicker({
   }, [mode]);
 
   useEffect(() => {
-    instanceRef.current?.set("minDate", minDate);
+    const instance = instanceRef.current;
+    if (!instance) return;
+    instance.set("minDate", minDate);
+    syncMobileBound(instance, "min", instance.config.minDate);
   }, [minDate]);
 
   useEffect(() => {
-    instanceRef.current?.set("maxDate", maxDate);
+    const instance = instanceRef.current;
+    if (!instance) return;
+    instance.set("maxDate", maxDate);
+    syncMobileBound(instance, "max", instance.config.maxDate);
   }, [maxDate]);
+
+  useEffect(() => {
+    instanceRef.current?.mobileInput?.toggleAttribute("disabled", disabled);
+  }, [disabled]);
 
   useEffect(() => {
     const instance = instanceRef.current;
