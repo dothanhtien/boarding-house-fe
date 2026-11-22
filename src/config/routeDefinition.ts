@@ -15,6 +15,14 @@ export const ROUTES = {
     `/properties/${propertyId}/rooms/${roomId}`,
   editRoom: (propertyId: string, roomId: string) =>
     `/properties/${propertyId}/rooms/${roomId}/edit`,
+  utilityReadings: (params: { propertyId?: string; month?: string } = {}) => {
+    const search = new URLSearchParams(
+      Object.entries(params).filter((entry): entry is [string, string] =>
+        Boolean(entry[1]),
+      ),
+    ).toString();
+    return `/utility-readings${search ? `?${search}` : ""}`;
+  },
   leases: "/leases",
   createLease: (roomId?: string) =>
     roomId ? `/leases/new?roomId=${encodeURIComponent(roomId)}` : "/leases/new",

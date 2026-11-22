@@ -12,6 +12,7 @@ import { organizationKeys } from "@/features/organizations/queries";
 import { propertyKeys } from "@/features/properties/queries";
 import { roomKeys } from "@/features/rooms/queries";
 import { userKeys } from "@/features/users/queries";
+import { utilityReadingKeys } from "@/features/utility-readings/queries";
 import { utilityServiceKeys } from "@/features/utility-services/queries";
 import { useUserRole } from "@/hooks/useUserRole";
 import { ChevronDownIcon } from "@/icons";
@@ -80,6 +81,7 @@ export const OrganizationSwitcher: React.FC = () => {
               queryClient.removeQueries({
                 queryKey: leaseUtilityServiceKeys.all,
               });
+              queryClient.removeQueries({ queryKey: utilityReadingKeys.all });
               router.push(ROUTES.dashboard);
             }}
             baseClassName=""

@@ -1,5 +1,12 @@
 import type { ComponentType, SVGProps } from "react";
-import { BuildingsIcon, DocsIcon, GridIcon, HomeIcon, UserIcon } from "@/icons";
+import {
+  BoltIcon,
+  BuildingsIcon,
+  DocsIcon,
+  GridIcon,
+  HomeIcon,
+  UserIcon,
+} from "@/icons";
 import { ROUTES } from "@/config/routeDefinition";
 import { RoleSlugs } from "@/enums/roles";
 
@@ -40,6 +47,12 @@ export const leasesNavItem: NavItem = {
   path: ROUTES.leases,
 };
 
+export const utilityReadingsNavItem: NavItem = {
+  icon: BoltIcon,
+  name: "Meter readings",
+  path: ROUTES.utilityReadings(),
+};
+
 export const organizationDetailNavItem = (organizationId: string): NavItem => {
   return {
     icon: BuildingsIcon,
@@ -69,12 +82,14 @@ export const ROLE_NAV_ITEMS: Record<string, NavItem[]> = {
     organizationsNavItem,
     propertiesNavItem,
     leasesNavItem,
+    utilityReadingsNavItem,
   ],
   [RoleSlugs.OrganizationStaff]: [
     dashboardNavItem,
     organizationsNavItem,
     propertiesNavItem,
     leasesNavItem,
+    utilityReadingsNavItem,
   ],
 };
 
