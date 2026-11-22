@@ -3,7 +3,7 @@
 import React from "react";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 import { Trash2 } from "lucide-react";
-import DatePicker from "@/components/form/date-picker";
+import DatePicker from "@/components/form/DatePicker";
 import Checkbox from "@/components/form/input/Checkbox";
 import { MAX_LEASE_TENANTS } from "@/features/leases/constants";
 import type { LeaseTermsFormValues } from "@/features/leases/schemas";

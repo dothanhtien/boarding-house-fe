@@ -4,7 +4,7 @@ import React, { useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import DatePicker from "@/components/form/date-picker";
+import DatePicker from "@/components/form/DatePicker";
 import Form from "@/components/form/Form";
 import Label from "@/components/form/Label";
 import TextArea from "@/components/form/input/TextArea";

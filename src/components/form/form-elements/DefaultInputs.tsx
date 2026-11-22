@@ -10,7 +10,7 @@ import {
   EyeIcon,
   TimeIcon,
 } from "../../../icons";
-import DatePicker from "@/components/form/date-picker";
+import DatePicker from "@/components/form/DatePicker";
 
 export function DefaultInputs() {
   const [showPassword, setShowPassword] = useState(false);
