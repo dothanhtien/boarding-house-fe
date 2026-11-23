@@ -10,9 +10,9 @@ import {
   computeAmount,
   computeUsage,
   formatMeterValue,
-  fromReadingMonth,
   parseMeterValue,
 } from "@/features/utility-readings/utils";
+import { fromBillingMonth } from "@/utils/month";
 import { formatCurrency } from "@/utils/currency";
 
 export interface MeterReadingCellProps {
@@ -265,7 +265,7 @@ export const MeterReadingCell: React.FC<MeterReadingCellProps> = ({
 
       {state === MeterCellState.Superseded && (
         <p className="mb-3 text-xs text-gray-500 dark:text-gray-400">
-          A later month ({fromReadingMonth(meter.latest!.readingMonth)}) has
+          A later month ({fromBillingMonth(meter.latest!.readingMonth)}) has
           already been recorded.
         </p>
       )}

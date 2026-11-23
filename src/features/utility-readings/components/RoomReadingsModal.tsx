@@ -18,7 +18,6 @@ import {
   buildMeterCells,
   buildRoomItems,
   formatInvoiceMonth,
-  fromReadingMonth,
   getReadOnRange,
   hasCellErrors,
   isInputState,
@@ -26,6 +25,7 @@ import {
   validateCell,
   validateReadOn,
 } from "@/features/utility-readings/utils";
+import { fromBillingMonth } from "@/utils/month";
 import { getUtcToday } from "@/utils/date";
 import { DeleteUtilityReadingDialog } from "./DeleteUtilityReadingDialog";
 import { MeterReadingCell } from "./MeterReadingCell";
@@ -120,7 +120,7 @@ export const RoomReadingsModal: React.FC<RoomReadingsModalProps> = ({
   const recordMutation = useRecordRoomUtilityReadings();
   const isPending = recordMutation.isPending;
   const { items, cellKeys } = buildRoomItems(cells, drafts);
-  const { invoice, usage } = formatInvoiceMonth(fromReadingMonth(readingMonth));
+  const { invoice, usage } = formatInvoiceMonth(fromBillingMonth(readingMonth));
   const today = getUtcToday();
   const readOnRange = getReadOnRange(readingMonth, today);
   const readOnError = validateReadOn(readOn, readingMonth, today);

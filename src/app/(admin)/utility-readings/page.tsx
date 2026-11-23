@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { UtilityReadingsView } from "@/features/utility-readings/components/UtilityReadingsView";
-import { isMonthValue } from "@/features/utility-readings/utils";
+import { isMonthValue } from "@/utils/month";
 
 export const metadata: Metadata = {
   title: "Meter Readings | Boarding House",
