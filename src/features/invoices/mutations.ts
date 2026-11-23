@@ -15,8 +15,13 @@ import type {
   UpdateInvoicePayload,
 } from "./types";
 
-function onInvoiceChanged(queryClient: QueryClient, invoice: InvoiceDetail) {
-  queryClient.setQueryData(invoiceKeys.detail(invoice.id), invoice);
+async function onInvoiceChanged(
+  queryClient: QueryClient,
+  invoice: InvoiceDetail,
+) {
+  const detailKey = invoiceKeys.detail(invoice.id);
+  await queryClient.cancelQueries({ queryKey: detailKey, exact: true });
+  queryClient.setQueryData(detailKey, invoice);
   queryClient.invalidateQueries({ queryKey: invoiceKeys.lists() });
   queryClient.invalidateQueries({
     queryKey: invoiceKeys.statusHistories(invoice.id),
@@ -46,9 +51,9 @@ export function useCreateInvoice() {
 
   return useMutation<InvoiceDetail, ApiError, CreateInvoicePayload>({
     mutationFn: (payload) => invoicesApi.createInvoice(payload),
-    onSuccess(data) {
-      onInvoiceChanged(queryClient, data);
+    async onSuccess(data) {
       queryClient.invalidateQueries({ queryKey: utilityReadingKeys.all });
+      await onInvoiceChanged(queryClient, data);
     },
   });
 }
@@ -76,9 +81,9 @@ export function useCancelInvoice() {
     { id: string; payload: CancelInvoicePayload }
   >({
     mutationFn: ({ id, payload }) => invoicesApi.cancelInvoice(id, payload),
-    onSuccess(data) {
-      onInvoiceChanged(queryClient, data);
+    async onSuccess(data) {
       queryClient.invalidateQueries({ queryKey: utilityReadingKeys.all });
+      await onInvoiceChanged(queryClient, data);
     },
     onError: (error, { id }) => onInvoiceChangeFailed(queryClient, error, id),
   });

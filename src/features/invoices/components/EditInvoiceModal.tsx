@@ -45,12 +45,13 @@ export const EditInvoiceModal: React.FC<EditInvoiceModalProps> = ({
   invoice,
   onClose,
 }) => {
+  const [initialInvoice] = useState(invoice);
   const [generalError, setGeneralError] = useState<string | null>(null);
   const updateInvoiceMutation = useUpdateInvoice();
   const isPending = updateInvoiceMutation.isPending;
   const form = useForm<EditInvoiceFormValues>({
     resolver: zodResolver(editInvoiceSchema),
-    defaultValues: toEditInvoiceFormValues(invoice),
+    defaultValues: toEditInvoiceFormValues(initialInvoice),
     mode: "all",
   });
   const {
@@ -74,7 +75,7 @@ export const EditInvoiceModal: React.FC<EditInvoiceModalProps> = ({
 
   const onSubmit = (values: EditInvoiceFormValues) => {
     setGeneralError(null);
-    const payload = buildInvoicePatch(invoice, values);
+    const payload = buildInvoicePatch(initialInvoice, values);
     if (Object.keys(payload).length === 0) {
       onClose();
       return;

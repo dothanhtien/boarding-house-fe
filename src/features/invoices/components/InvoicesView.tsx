@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
+import Label from "@/components/form/Label";
 import { Select } from "@/components/form/Select";
 import Pagination from "@/components/tables/Pagination";
 import Button from "@/components/ui/button/Button";
@@ -65,6 +66,9 @@ export const InvoicesView: React.FC = () => {
                 placeholder="Search by invoice # or lease code"
                 onSearchChange={setSearch}
               />
+              <Label htmlFor="invoicePropertyFilter" className="sr-only">
+                Property
+              </Label>
               <Select
                 id="invoicePropertyFilter"
                 className="lg:w-52"
@@ -79,6 +83,9 @@ export const InvoicesView: React.FC = () => {
                   resetPage();
                 }}
               />
+              <Label htmlFor="invoiceStatusFilter" className="sr-only">
+                Status
+              </Label>
               <Select
                 id="invoiceStatusFilter"
                 className="lg:w-44"
@@ -90,6 +97,9 @@ export const InvoicesView: React.FC = () => {
                   resetPage();
                 }}
               />
+              <Label htmlFor="invoiceMonthFilter" className="sr-only">
+                Billing month
+              </Label>
               <InvoiceMonthSelect
                 id="invoiceMonthFilter"
                 className="lg:w-40"
