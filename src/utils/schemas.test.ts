@@ -7,6 +7,30 @@ const errorsOf = (schema: ReturnType<typeof money>, value: string) => {
 };
 
 describe("money", () => {
+  describe("negative amounts allowed", () => {
+    const schema = money("Unit price", {
+      required: true,
+      allowZero: false,
+      allowNegative: true,
+    });
+
+    it("accepts positive and negative amounts", () => {
+      expect(errorsOf(schema, "50000")).toEqual([]);
+      expect(errorsOf(schema, "-50000")).toEqual([]);
+      expect(errorsOf(schema, "-12.5")).toEqual([]);
+    });
+
+    it("rejects zero", () => {
+      expect(errorsOf(schema, "0")).toEqual(["Unit price must not be 0"]);
+    });
+
+    it("rejects more than 2 decimal places", () => {
+      expect(errorsOf(schema, "-1.234")).toEqual([
+        "Unit price must have at most 2 decimal places",
+      ]);
+    });
+  });
+
   describe("required, zero not allowed", () => {
     const schema = money("Rent", { required: true, allowZero: false });
 

@@ -5,7 +5,7 @@ import { ArrowRight, Images, Lock } from "lucide-react";
 import { Tooltip } from "@/components/ui/tooltip/Tooltip";
 import type { ImageViewerItem } from "@/components/ui/image-viewer/ImageViewer";
 import type { RoomAssetConditionHistory } from "@/features/room-assets/types";
-import { useActorName } from "@/features/room-assets/useActorName";
+import { useActorName } from "@/hooks/useActorName";
 import { DateFormat, formatDate } from "@/utils/date";
 import { AssetConditionBadge } from "./AssetConditionBadge";
 

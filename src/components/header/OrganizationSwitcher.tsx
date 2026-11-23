@@ -6,6 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import { ROUTES } from "@/config/routeDefinition";
+import { invoiceKeys } from "@/features/invoices/queries";
 import { leaseUtilityServiceKeys } from "@/features/lease-utility-services/queries";
 import { leaseKeys } from "@/features/leases/queries";
 import { organizationKeys } from "@/features/organizations/queries";
@@ -82,6 +83,7 @@ export const OrganizationSwitcher: React.FC = () => {
                 queryKey: leaseUtilityServiceKeys.all,
               });
               queryClient.removeQueries({ queryKey: utilityReadingKeys.all });
+              queryClient.removeQueries({ queryKey: invoiceKeys.all });
               router.push(ROUTES.dashboard);
             }}
             baseClassName=""

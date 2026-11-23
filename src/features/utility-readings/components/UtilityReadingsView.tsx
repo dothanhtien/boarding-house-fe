@@ -14,8 +14,8 @@ import { useUtilityReadingRooms } from "@/features/utility-readings/queries";
 import {
   getDefaultReadingMonth,
   isSelectableReadingMonth,
-  toReadingMonth,
 } from "@/features/utility-readings/utils";
+import { toBillingMonth } from "@/utils/month";
 import { useListPageState } from "@/hooks/useListPageState";
 import { ReadingMonthSelect } from "./ReadingMonthSelect";
 import { RoomReadingsModal } from "./RoomReadingsModal";
@@ -78,7 +78,7 @@ export const UtilityReadingsView: React.FC<UtilityReadingsViewProps> = ({
   )
     ? selectedPropertyId
     : (properties[0]?.id ?? "");
-  const readingMonth = toReadingMonth(month);
+  const readingMonth = toBillingMonth(month);
 
   const { data, isLoading, isPlaceholderData, error } = useUtilityReadingRooms(
     propertyId,

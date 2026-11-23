@@ -5,6 +5,7 @@ import {
   DocsIcon,
   GridIcon,
   HomeIcon,
+  ReceiptIcon,
   UserIcon,
 } from "@/icons";
 import { ROUTES } from "@/config/routeDefinition";
@@ -53,6 +54,12 @@ export const utilityReadingsNavItem: NavItem = {
   path: ROUTES.utilityReadings(),
 };
 
+export const invoicesNavItem: NavItem = {
+  icon: ReceiptIcon,
+  name: "Invoices",
+  path: ROUTES.invoices,
+};
+
 export const organizationDetailNavItem = (organizationId: string): NavItem => {
   return {
     icon: BuildingsIcon,
@@ -83,6 +90,7 @@ export const ROLE_NAV_ITEMS: Record<string, NavItem[]> = {
     propertiesNavItem,
     leasesNavItem,
     utilityReadingsNavItem,
+    invoicesNavItem,
   ],
   [RoleSlugs.OrganizationStaff]: [
     dashboardNavItem,
@@ -90,6 +98,7 @@ export const ROLE_NAV_ITEMS: Record<string, NavItem[]> = {
     propertiesNavItem,
     leasesNavItem,
     utilityReadingsNavItem,
+    invoicesNavItem,
   ],
 };
 

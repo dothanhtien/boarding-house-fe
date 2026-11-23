@@ -1,6 +1,12 @@
 import dayjs from "dayjs";
 import { DateFormat } from "@/utils/date";
 import {
+  MonthFormat,
+  getCurrentUtcMonth,
+  getMonthOptions,
+  toBillingMonth,
+} from "@/utils/month";
+import {
   MeterCellState,
   READING_MONTH_DEFAULT_SWITCH_DAY,
   READING_MONTH_LOOKBACK,
@@ -13,40 +19,34 @@ import type {
   UtilityReadingRoomMeters,
 } from "./types";
 
-const MONTH_FORMAT = "YYYY-MM";
-
-export const toReadingMonth = (month: string) => `${month}-01`;
-export const fromReadingMonth = (readingMonth: string) =>
-  readingMonth.slice(0, 7);
-
-export const isMonthValue = (value: unknown): value is string =>
-  typeof value === "string" && /^\d{4}-(0[1-9]|1[0-2])$/.test(value);
-
 const utcNow = () => dayjs.utc();
 
-export const getCurrentReadingMonth = () => utcNow().format(MONTH_FORMAT);
+export const getCurrentReadingMonth = getCurrentUtcMonth;
 
 export function getDefaultReadingMonth(today = utcNow()) {
   const month =
     today.date() >= READING_MONTH_DEFAULT_SWITCH_DAY
       ? today.add(1, "month")
       : today;
-  return month.format(MONTH_FORMAT);
+  return month.format(MonthFormat.Value);
 }
 
 export function formatInvoiceMonth(month: string) {
-  const invoiceMonth = dayjs(toReadingMonth(month));
+  const invoiceMonth = dayjs(toBillingMonth(month));
   return {
-    invoice: invoiceMonth.format("MM/YYYY"),
-    usage: invoiceMonth.subtract(1, "month").format("MM/YYYY"),
+    invoice: invoiceMonth.format(MonthFormat.Display),
+    usage: invoiceMonth.subtract(1, "month").format(MonthFormat.Display),
   };
 }
 
 export function getReadingMonthOptions(today = utcNow()) {
-  return Array.from({ length: READING_MONTH_LOOKBACK + 2 }, (_, i) => {
-    const value = today.add(1 - i, "month").format(MONTH_FORMAT);
-    const { invoice, usage } = formatInvoiceMonth(value);
-    return { value, label: `Invoice ${invoice} · usage ${usage}` };
+  return getMonthOptions({
+    today,
+    lookback: READING_MONTH_LOOKBACK,
+    formatLabel: (value) => {
+      const { invoice, usage } = formatInvoiceMonth(value);
+      return `Invoice ${invoice} · usage ${usage}`;
+    },
   });
 }
 

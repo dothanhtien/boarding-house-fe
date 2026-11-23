@@ -17,6 +17,8 @@ interface InputProps {
   success?: boolean;
   error?: boolean;
   hint?: string;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  "aria-label"?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -38,6 +40,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       success = false,
       error = false,
       hint,
+      inputMode,
+      "aria-label": ariaLabel,
     },
     ref,
   ) => {
@@ -69,6 +73,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           max={max}
           step={step}
           disabled={disabled}
+          inputMode={inputMode}
+          aria-label={ariaLabel}
+          aria-invalid={error || undefined}
           className={inputClasses}
         />
 

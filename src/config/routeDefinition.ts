@@ -1,3 +1,14 @@
+type QueryParams = Record<string, string | number | undefined>;
+
+const toQueryString = (params: QueryParams) => {
+  const search = new URLSearchParams(
+    Object.entries(params)
+      .filter(([, value]) => value !== undefined && value !== "")
+      .map(([key, value]) => [key, String(value)]),
+  ).toString();
+  return search ? `?${search}` : "";
+};
+
 export const ROUTES = {
   signIn: "/signin",
   signUp: "/signup",
@@ -15,14 +26,11 @@ export const ROUTES = {
     `/properties/${propertyId}/rooms/${roomId}`,
   editRoom: (propertyId: string, roomId: string) =>
     `/properties/${propertyId}/rooms/${roomId}/edit`,
-  utilityReadings: (params: { propertyId?: string; month?: string } = {}) => {
-    const search = new URLSearchParams(
-      Object.entries(params).filter((entry): entry is [string, string] =>
-        Boolean(entry[1]),
-      ),
-    ).toString();
-    return `/utility-readings${search ? `?${search}` : ""}`;
-  },
+  utilityReadings: (params: { propertyId?: string; month?: string } = {}) =>
+    `/utility-readings${toQueryString(params)}`,
+  invoices: "/invoices",
+  invoiceDetail: (id: string) => `/invoices/${id}`,
+  createInvoice: "/invoices/new",
   leases: "/leases",
   createLease: (roomId?: string) =>
     roomId ? `/leases/new?roomId=${encodeURIComponent(roomId)}` : "/leases/new",

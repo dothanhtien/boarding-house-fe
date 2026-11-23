@@ -55,6 +55,7 @@ import MoreDotIcon from "./more-dot.svg";
 import BellIcon from "./bell.svg";
 import BuildingsIcon from "./buildings.svg";
 import HomeIcon from "./home.svg";
+import ReceiptIcon from "./receipt.svg";
 
 export {
   DownloadIcon,
@@ -112,4 +113,5 @@ export {
   ChatIcon,
   BuildingsIcon,
   HomeIcon,
+  ReceiptIcon,
 };
