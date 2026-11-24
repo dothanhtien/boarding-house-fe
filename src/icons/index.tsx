@@ -56,6 +56,7 @@ import BellIcon from "./bell.svg";
 import BuildingsIcon from "./buildings.svg";
 import HomeIcon from "./home.svg";
 import ReceiptIcon from "./receipt.svg";
+import WalletIcon from "./wallet.svg";
 
 export {
   DownloadIcon,
@@ -114,4 +115,5 @@ export {
   BuildingsIcon,
   HomeIcon,
   ReceiptIcon,
+  WalletIcon,
 };

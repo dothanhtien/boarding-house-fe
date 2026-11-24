@@ -4,6 +4,7 @@ import {
   type QueryClient,
 } from "@tanstack/react-query";
 import { HttpStatus } from "@/enums/httpStatus";
+import { paymentKeys } from "@/features/payments/queries";
 import { utilityReadingKeys } from "@/features/utility-readings/queries";
 import type { ApiError } from "@/lib/axios";
 import { invoicesApi } from "./api";
@@ -83,6 +84,10 @@ export function useCancelInvoice() {
     mutationFn: ({ id, payload }) => invoicesApi.cancelInvoice(id, payload),
     async onSuccess(data) {
       queryClient.invalidateQueries({ queryKey: utilityReadingKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: paymentKeys.byInvoice(data.id),
+      });
+      queryClient.invalidateQueries({ queryKey: paymentKeys.lists() });
       await onInvoiceChanged(queryClient, data);
     },
     onError: (error, { id }) => onInvoiceChangeFailed(queryClient, error, id),

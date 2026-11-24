@@ -7,6 +7,7 @@ import {
   HomeIcon,
   ReceiptIcon,
   UserIcon,
+  WalletIcon,
 } from "@/icons";
 import { ROUTES } from "@/config/routeDefinition";
 import { RoleSlugs } from "@/enums/roles";
@@ -60,6 +61,12 @@ export const invoicesNavItem: NavItem = {
   path: ROUTES.invoices,
 };
 
+export const paymentsNavItem: NavItem = {
+  icon: WalletIcon,
+  name: "Payments",
+  path: ROUTES.payments,
+};
+
 export const organizationDetailNavItem = (organizationId: string): NavItem => {
   return {
     icon: BuildingsIcon,
@@ -91,6 +98,7 @@ export const ROLE_NAV_ITEMS: Record<string, NavItem[]> = {
     leasesNavItem,
     utilityReadingsNavItem,
     invoicesNavItem,
+    paymentsNavItem,
   ],
   [RoleSlugs.OrganizationStaff]: [
     dashboardNavItem,
@@ -99,6 +107,7 @@ export const ROLE_NAV_ITEMS: Record<string, NavItem[]> = {
     leasesNavItem,
     utilityReadingsNavItem,
     invoicesNavItem,
+    paymentsNavItem,
   ],
 };
 
