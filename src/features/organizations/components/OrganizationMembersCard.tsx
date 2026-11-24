@@ -44,10 +44,15 @@ export const OrganizationMembersCard: React.FC<
   ];
 
   return (
-    <div className="rounded-2xl border border-gray-200 p-5 lg:p-6 dark:border-gray-800">
-      <h4 className="mb-5 text-lg font-semibold text-gray-800 lg:mb-6 dark:text-white/90">
-        Members
-      </h4>
+    <section className="rounded-2xl border border-gray-200 bg-white p-5 lg:p-6 dark:border-gray-800 dark:bg-white/3">
+      <div className="mb-5 flex items-center gap-2">
+        <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+          Members
+        </h4>
+        <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+          {organization.members?.length ?? 0}
+        </span>
+      </div>
 
       <SortableDataTable
         columns={columns}
@@ -58,6 +63,6 @@ export const OrganizationMembersCard: React.FC<
         emptyMessage="No members found."
         minWidthClassName="min-w-[700px]"
       />
-    </div>
+    </section>
   );
 };
