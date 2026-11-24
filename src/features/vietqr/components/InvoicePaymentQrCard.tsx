@@ -247,7 +247,7 @@ export const InvoicePaymentQrCard: React.FC<InvoicePaymentQrCardProps> = ({
             </p>
           )}
           {renderError()}
-          {qr && (
+          {qr && !error && (
             <QrContent
               invoice={invoice}
               qr={qr}
