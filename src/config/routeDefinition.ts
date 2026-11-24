@@ -31,6 +31,7 @@ export const ROUTES = {
   invoices: "/invoices",
   invoiceDetail: (id: string) => `/invoices/${id}`,
   createInvoice: "/invoices/new",
+  payments: "/payments",
   leases: "/leases",
   createLease: (roomId?: string) =>
     roomId ? `/leases/new?roomId=${encodeURIComponent(roomId)}` : "/leases/new",

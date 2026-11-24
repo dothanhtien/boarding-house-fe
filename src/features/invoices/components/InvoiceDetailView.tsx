@@ -13,6 +13,7 @@ import {
   isInvoiceCancellable,
   isInvoiceEditable,
 } from "@/features/invoices/utils";
+import { InvoicePaymentsCard } from "@/features/payments/components/InvoicePaymentsCard";
 import { useUserRole } from "@/hooks/useUserRole";
 import { ChevronLeftIcon } from "@/icons";
 import { DateFormat, formatDate } from "@/utils/date";
@@ -158,6 +159,8 @@ export const InvoiceDetailView: React.FC<InvoiceDetailViewProps> = ({
 
               <div className="flex flex-col gap-6">
                 <InvoiceSummaryCard invoice={invoice} />
+
+                <InvoicePaymentsCard invoice={invoice} />
 
                 <div className="rounded-2xl border border-gray-200 p-5 lg:p-6 dark:border-gray-800">
                   <h4 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white/90">

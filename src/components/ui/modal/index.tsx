@@ -1,6 +1,15 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useOverlay } from "@/hooks/useOverlay";
+
+const FOCUSABLE_SELECTOR = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled]):not([type='hidden'])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  "[tabindex]:not([tabindex='-1'])",
+].join(",");
 
 interface ModalProps {
   isOpen: boolean;
@@ -10,6 +19,8 @@ interface ModalProps {
   showCloseButton?: boolean;
   isFullscreen?: boolean;
   closeOnBackdropClick?: boolean;
+  labelledBy?: string;
+  ariaLabel?: string;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -20,10 +31,53 @@ export const Modal: React.FC<ModalProps> = ({
   showCloseButton = true,
   isFullscreen = false,
   closeOnBackdropClick = true,
+  labelledBy,
+  ariaLabel,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useOverlay(isOpen, closeOnBackdropClick ? onClose : undefined);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const opener =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+    const dialog = modalRef.current;
+    if (dialog && !dialog.contains(document.activeElement)) {
+      dialog.focus();
+    }
+
+    return () => {
+      if (opener?.isConnected) opener.focus();
+    };
+  }, [isOpen]);
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "Tab" || !modalRef.current) return;
+
+    const focusable = Array.from(
+      modalRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+    );
+    if (focusable.length === 0) {
+      event.preventDefault();
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement;
+
+    if (event.shiftKey && (active === first || active === modalRef.current)) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -41,11 +95,19 @@ export const Modal: React.FC<ModalProps> = ({
       )}
       <div
         ref={modalRef}
-        className={`${contentClasses} ${className}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={labelledBy}
+        aria-label={labelledBy ? undefined : ariaLabel}
+        tabIndex={-1}
+        className={`${contentClasses} ${className} outline-none`}
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={handleKeyDown}
       >
         {showCloseButton && (
           <button
+            type="button"
+            aria-label="Close"
             onClick={onClose}
             className="absolute top-3 right-3 z-999 flex h-9.5 w-9.5 items-center justify-center rounded-full bg-gray-100 text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-700 sm:top-6 sm:right-6 sm:h-11 sm:w-11 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
           >

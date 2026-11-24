@@ -10,6 +10,7 @@ import { invoiceKeys } from "@/features/invoices/queries";
 import { leaseUtilityServiceKeys } from "@/features/lease-utility-services/queries";
 import { leaseKeys } from "@/features/leases/queries";
 import { organizationKeys } from "@/features/organizations/queries";
+import { paymentKeys } from "@/features/payments/queries";
 import { propertyKeys } from "@/features/properties/queries";
 import { roomKeys } from "@/features/rooms/queries";
 import { userKeys } from "@/features/users/queries";
@@ -84,6 +85,7 @@ export const OrganizationSwitcher: React.FC = () => {
               });
               queryClient.removeQueries({ queryKey: utilityReadingKeys.all });
               queryClient.removeQueries({ queryKey: invoiceKeys.all });
+              queryClient.removeQueries({ queryKey: paymentKeys.all });
               router.push(ROUTES.dashboard);
             }}
             baseClassName=""
