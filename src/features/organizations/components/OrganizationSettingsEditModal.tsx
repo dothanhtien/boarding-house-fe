@@ -21,6 +21,7 @@ import { Select } from "@/components/form/Select";
 import Button from "@/components/ui/button/Button";
 import { ApiError } from "@/lib/axios";
 import { applyApiFormErrors } from "@/utils/formErrors";
+import { BankSelectField } from "@/features/vietqr/components/BankSelectField";
 import { LATE_FEE_TYPE_OPTIONS } from "./OrganizationSettingsCard";
 
 const buildDefaultValues = (
@@ -35,6 +36,7 @@ const buildDefaultValues = (
     bankAccountNumber: settings.bankAccountNumber ?? "",
     bankName: settings.bankName ?? "",
     bankAccountName: settings.bankAccountName ?? "",
+    bankBin: settings.bankBin ?? "",
   };
 };
 
@@ -58,6 +60,7 @@ export const OrganizationSettingsEditModal: React.FC<
     control,
     setError,
     setValue,
+    trigger,
     reset,
     formState: { errors, dirtyFields },
   } = useForm<OrganizationSettingsFormValues>({
@@ -114,8 +117,9 @@ export const OrganizationSettingsEditModal: React.FC<
     if (dirtyFields.vatRate) {
       payload.vatRate = values.vatRate === "" ? null : Number(values.vatRate);
     }
-    if (dirtyFields.bankAccountNumber) {
+    if (dirtyFields.bankAccountNumber || dirtyFields.bankBin) {
       payload.bankAccountNumber = values.bankAccountNumber.trim() || null;
+      payload.bankBin = values.bankBin || null;
     }
     if (dirtyFields.bankName) {
       payload.bankName = values.bankName.trim() || null;
@@ -148,6 +152,7 @@ export const OrganizationSettingsEditModal: React.FC<
               "bankAccountNumber",
               "bankName",
               "bankAccountName",
+              "bankBin",
             ],
             setError,
             setGeneralError,
@@ -265,36 +270,74 @@ export const OrganizationSettingsEditModal: React.FC<
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-3">
-              <div>
-                <Label htmlFor="bankName">Bank name</Label>
-                <Input
-                  id="bankName"
-                  type="text"
-                  error={!!errors.bankName}
-                  hint={errors.bankName?.message}
-                  {...register("bankName")}
-                />
-              </div>
-              <div>
-                <Label htmlFor="bankAccountNumber">Bank account number</Label>
-                <Input
-                  id="bankAccountNumber"
-                  type="text"
-                  error={!!errors.bankAccountNumber}
-                  hint={errors.bankAccountNumber?.message}
-                  {...register("bankAccountNumber")}
-                />
-              </div>
-              <div>
-                <Label htmlFor="bankAccountName">Bank account name</Label>
-                <Input
-                  id="bankAccountName"
-                  type="text"
-                  error={!!errors.bankAccountName}
-                  hint={errors.bankAccountName?.message}
-                  {...register("bankAccountName")}
-                />
+            <div>
+              <p className="mb-3 text-sm font-medium text-gray-700 dark:text-gray-400">
+                Bank account
+                <span className="ml-1 font-normal text-gray-500">
+                  · used for the payment QR on invoices
+                </span>
+              </p>
+              <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                <div>
+                  <Label htmlFor="bankBin">Bank</Label>
+                  <Controller
+                    name="bankBin"
+                    control={control}
+                    render={({ field }) => (
+                      <BankSelectField
+                        id="bankBin"
+                        value={field.value}
+                        onChange={(bin) => {
+                          setValue("bankBin", bin, {
+                            shouldDirty: true,
+                            shouldValidate: true,
+                          });
+                          trigger("bankAccountNumber");
+                        }}
+                        error={!!errors.bankBin}
+                      />
+                    )}
+                  />
+                  {errors.bankBin && (
+                    <p className="text-error-500 mt-1.5 text-sm">
+                      {errors.bankBin.message}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="bankAccountNumber">Account number</Label>
+                  <Input
+                    id="bankAccountNumber"
+                    type="text"
+                    error={!!errors.bankAccountNumber}
+                    hint={errors.bankAccountNumber?.message}
+                    {...register("bankAccountNumber")}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="bankAccountName">Account holder</Label>
+                  <Input
+                    id="bankAccountName"
+                    type="text"
+                    placeholder="NGUYEN VAN A"
+                    error={!!errors.bankAccountName}
+                    hint={
+                      errors.bankAccountName?.message ??
+                      "As shown by the bank, e.g. upper case without accents."
+                    }
+                    {...register("bankAccountName")}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="bankName">Bank name / branch</Label>
+                  <Input
+                    id="bankName"
+                    type="text"
+                    error={!!errors.bankName}
+                    hint={errors.bankName?.message}
+                    {...register("bankName")}
+                  />
+                </div>
               </div>
             </div>
           </div>
