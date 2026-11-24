@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
 import DatePicker from "@/components/form/DatePicker";
+import Label from "@/components/form/Label";
 import { Select } from "@/components/form/Select";
 import Pagination from "@/components/tables/Pagination";
 import { SearchInput } from "@/components/ui/search-input/SearchInput";
@@ -76,6 +77,9 @@ export const PaymentsView: React.FC = () => {
               placeholder="Search by invoice #, lease code or reference"
               onSearchChange={setSearch}
             />
+            <Label htmlFor="paymentPropertyFilter" className="sr-only">
+              Property
+            </Label>
             <Select
               id="paymentPropertyFilter"
               className="lg:w-52"
@@ -87,6 +91,9 @@ export const PaymentsView: React.FC = () => {
               value={propertyId}
               onChange={changeFilter(setPropertyId)}
             />
+            <Label htmlFor="paymentMethodFilter" className="sr-only">
+              Method
+            </Label>
             <Select
               id="paymentMethodFilter"
               className="lg:w-40"
@@ -97,6 +104,9 @@ export const PaymentsView: React.FC = () => {
                 setMethod(value as PaymentMethod | ""),
               )}
             />
+            <Label htmlFor="paymentStatusFilter" className="sr-only">
+              Status
+            </Label>
             <Select
               id="paymentStatusFilter"
               className="lg:w-40"

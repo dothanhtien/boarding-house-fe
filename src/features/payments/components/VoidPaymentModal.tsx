@@ -69,12 +69,16 @@ export const VoidPaymentModal: React.FC<VoidPaymentModalProps> = ({
   return (
     <Modal
       isOpen
+      labelledBy="voidPaymentTitle"
       onClose={handleClose}
       className="m-4 max-w-[480px]"
       closeOnBackdropClick={false}
     >
       <div className="relative w-full rounded-3xl bg-white p-6 lg:p-8 dark:bg-gray-900">
-        <h4 className="mb-2 text-xl font-semibold text-gray-800 dark:text-white/90">
+        <h4
+          id="voidPaymentTitle"
+          className="mb-2 text-xl font-semibold text-gray-800 dark:text-white/90"
+        >
           Void payment
         </h4>
         <p className="text-sm text-gray-500 dark:text-gray-400">

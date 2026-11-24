@@ -8,13 +8,8 @@ import {
   VOID_REASON_MAX_LENGTH,
 } from "./constants";
 
-const trimmedMax = (label: string, max: number) =>
-  z
-    .string()
-    .refine(
-      (value) => value.trim().length <= max,
-      `${label} must not exceed ${max} characters`,
-    );
+const tooLong = (label: string, max: number) =>
+  `${label} must not exceed ${max} characters`;
 
 export const buildRecordPaymentSchema = (maxAmount: number, today: string) =>
   z
@@ -43,11 +38,8 @@ export const buildRecordPaymentSchema = (maxAmount: number, today: string) =>
           "Received date must not be in the future",
         ),
       payer: z.string(),
-      payerNameOverride: trimmedMax("Payer name", PAYER_NAME_MAX_LENGTH),
-      transactionReference: trimmedMax(
-        "Transaction reference",
-        TRANSACTION_REFERENCE_MAX_LENGTH,
-      ),
+      payerNameOverride: z.string(),
+      transactionReference: z.string(),
       note: z
         .string()
         .max(
@@ -57,11 +49,35 @@ export const buildRecordPaymentSchema = (maxAmount: number, today: string) =>
       confirm: z.boolean(),
     })
     .superRefine((values, ctx) => {
-      if (values.payer === OTHER_PAYER && !values.payerNameOverride.trim()) {
+      if (values.payer === OTHER_PAYER) {
+        const payerName = values.payerNameOverride.trim();
+        if (!payerName) {
+          ctx.addIssue({
+            code: "custom",
+            path: ["payerNameOverride"],
+            message: "Payer name is required",
+          });
+        } else if (payerName.length > PAYER_NAME_MAX_LENGTH) {
+          ctx.addIssue({
+            code: "custom",
+            path: ["payerNameOverride"],
+            message: tooLong("Payer name", PAYER_NAME_MAX_LENGTH),
+          });
+        }
+      }
+
+      if (
+        values.method === PaymentMethod.BankTransfer &&
+        values.transactionReference.trim().length >
+          TRANSACTION_REFERENCE_MAX_LENGTH
+      ) {
         ctx.addIssue({
           code: "custom",
-          path: ["payerNameOverride"],
-          message: "Payer name is required",
+          path: ["transactionReference"],
+          message: tooLong(
+            "Transaction reference",
+            TRANSACTION_REFERENCE_MAX_LENGTH,
+          ),
         });
       }
     });
