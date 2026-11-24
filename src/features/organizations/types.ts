@@ -70,6 +70,7 @@ export type OrganizationSettings = {
   bankAccountNumber: string | null;
   bankName: string | null;
   bankAccountName: string | null;
+  bankBin: string | null;
   updatedAt: string | null;
 };
 
@@ -82,4 +83,5 @@ export type UpdateOrganizationSettingsPayload = Partial<{
   bankAccountNumber: string | null;
   bankName: string | null;
   bankAccountName: string | null;
+  bankBin: string | null;
 }>;

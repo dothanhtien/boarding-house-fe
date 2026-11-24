@@ -14,16 +14,17 @@ import {
   isInvoiceEditable,
 } from "@/features/invoices/utils";
 import { InvoicePaymentsCard } from "@/features/payments/components/InvoicePaymentsCard";
+import { InvoicePaymentQrCard } from "@/features/vietqr/components/InvoicePaymentQrCard";
 import { useUserRole } from "@/hooks/useUserRole";
 import { ChevronLeftIcon } from "@/icons";
 import { DateFormat, formatDate } from "@/utils/date";
 import { CancelInvoiceModal } from "./CancelInvoiceModal";
 import { EditInvoiceModal } from "./EditInvoiceModal";
+import { InvoiceAmountSummary } from "./InvoiceAmountSummary";
 import { InvoiceLinesTable } from "./InvoiceLinesTable";
 import { InvoiceTotals } from "./InvoiceTotals";
 import { InvoiceStatusBadge } from "./InvoiceStatusBadge";
 import { InvoiceStatusTimeline } from "./InvoiceStatusTimeline";
-import { InvoiceSummaryCard } from "./InvoiceSummaryCard";
 
 interface InvoiceDetailViewProps {
   invoiceId: string;
@@ -129,10 +130,20 @@ export const InvoiceDetailView: React.FC<InvoiceDetailViewProps> = ({
                   </div>
                 )}
               </div>
+
+              <div className="mt-6 border-t border-gray-100 pt-5 dark:border-white/5">
+                <InvoiceAmountSummary invoice={invoice} />
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-              <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,380px)]">
+              <div className="flex flex-col gap-6 xl:col-start-2 xl:row-start-1">
+                <InvoicePaymentQrCard invoice={invoice} />
+
+                <InvoicePaymentsCard invoice={invoice} />
+              </div>
+
+              <div className="flex flex-col gap-6 xl:col-start-1 xl:row-start-1">
                 <div
                   className={`rounded-2xl border border-gray-200 p-5 lg:p-6 dark:border-gray-800 ${isCancelled ? "opacity-70" : ""}`}
                 >
@@ -155,12 +166,6 @@ export const InvoiceDetailView: React.FC<InvoiceDetailViewProps> = ({
                     </p>
                   </div>
                 )}
-              </div>
-
-              <div className="flex flex-col gap-6">
-                <InvoiceSummaryCard invoice={invoice} />
-
-                <InvoicePaymentsCard invoice={invoice} />
 
                 <div className="rounded-2xl border border-gray-200 p-5 lg:p-6 dark:border-gray-800">
                   <h4 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white/90">

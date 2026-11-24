@@ -8,6 +8,9 @@ import { PencilIcon } from "@/icons";
 import { formatDate } from "@/utils/date";
 import { formatCurrency } from "@/utils/currency";
 import { OrganizationSettingsEditModal } from "./OrganizationSettingsEditModal";
+import { useVietQrBanks } from "@/features/vietqr/queries";
+import { formatBankOption } from "@/features/vietqr/utils";
+import type { OrganizationSettings } from "../types";
 
 interface OrganizationSettingsCardProps {
   organizationId: string;
@@ -17,6 +20,27 @@ export const LATE_FEE_TYPE_OPTIONS: { value: string; label: string }[] = [
   { value: "percent", label: "Percent" },
   { value: "fixed", label: "Fixed amount" },
 ];
+
+const BankAccountSummary: React.FC<{ settings: OrganizationSettings }> = ({
+  settings,
+}) => {
+  const { data: banks } = useVietQrBanks();
+  if (!settings.bankBin || !settings.bankAccountNumber) {
+    return (
+      <span className="font-normal text-gray-500 dark:text-gray-400">
+        Not configured. Invoices can&apos;t show a payment QR.
+      </span>
+    );
+  }
+  const bank = banks?.find((item) => item.bin === settings.bankBin);
+  return [
+    bank ? formatBankOption(bank) : settings.bankBin,
+    settings.bankAccountNumber,
+    settings.bankAccountName,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+};
 
 const LATE_FEE_TYPE_LABELS: Record<string, string> = Object.fromEntries(
   LATE_FEE_TYPE_OPTIONS.map((option) => [option.value, option.label]),
@@ -89,15 +113,11 @@ export const OrganizationSettingsCard: React.FC<
                   settings.vatRate !== null ? `${settings.vatRate}%` : null
                 }
               />
-              <InfoItem label="Bank name" value={settings.bankName} />
               <InfoItem
-                label="Bank account number"
-                value={settings.bankAccountNumber}
+                label="Bank account"
+                value={<BankAccountSummary settings={settings} />}
               />
-              <InfoItem
-                label="Bank account name"
-                value={settings.bankAccountName}
-              />
+              <InfoItem label="Bank name / branch" value={settings.bankName} />
               <InfoItem
                 label="Last updated"
                 value={formatDate(settings.updatedAt)}

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidVietQrAccountNumber } from "@/features/vietqr/utils";
 
 const organizationBaseSchema = z.object({
   name: z
@@ -85,11 +86,22 @@ export const organizationSettingsSchema = z
     bankAccountName: z
       .string()
       .max(100, "Bank account name exceeds 100 characters"),
+    bankBin: z.string(),
   })
   .refine((data) => (data.lateFeeType === "") === (data.lateFeeValue === ""), {
     message: "Late fee type and late fee value must be set together",
     path: ["lateFeeValue"],
-  });
+  })
+  .refine(
+    (data) =>
+      !data.bankBin ||
+      isValidVietQrAccountNumber(data.bankAccountNumber.trim()),
+    {
+      message:
+        "With a bank selected, the account number must be 1–19 letters or digits, without spaces",
+      path: ["bankAccountNumber"],
+    },
+  );
 
 export type OrganizationSettingsFormValues = z.infer<
   typeof organizationSettingsSchema
