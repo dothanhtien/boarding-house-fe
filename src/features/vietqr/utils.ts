@@ -10,8 +10,9 @@ const QR_STATUSES: InvoiceStatus[] = [
   InvoiceStatus.Overdue,
 ];
 
-export const isQrAvailable = (invoice: Invoice) =>
-  QR_STATUSES.includes(invoice.status) && invoice.remainingAmount >= 1;
+export const isQrAvailable = (
+  invoice: Pick<Invoice, "status" | "remainingAmount">,
+) => QR_STATUSES.includes(invoice.status) && invoice.remainingAmount >= 1;
 
 const NOT_CONFIGURED_MESSAGE = "bank account is not configured";
 

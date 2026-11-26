@@ -129,3 +129,19 @@ export const getOrgRoleNavItems = (
       : item,
   );
 };
+
+export const TENANT_PORTAL_NAV_ITEMS: NavItem[] = [
+  { icon: GridIcon, name: "Overview", path: ROUTES.tenantPortal },
+  { icon: DocsIcon, name: "My leases", path: ROUTES.tenantPortalLeases },
+  {
+    icon: ReceiptIcon,
+    name: "My invoices",
+    path: ROUTES.tenantPortalInvoices(),
+  },
+  { icon: WalletIcon, name: "My payments", path: ROUTES.tenantPortalPayments },
+];
+
+export const WORKSPACE_HOME_PATHS: string[] = [
+  ROUTES.dashboard,
+  ROUTES.tenantPortal,
+];

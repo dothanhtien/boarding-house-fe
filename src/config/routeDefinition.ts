@@ -39,4 +39,12 @@ export const ROUTES = {
     `/leases/${id}${origin ? `?origin=${encodeURIComponent(origin)}` : ""}`,
   editLease: (id: string, origin?: string) =>
     `/leases/${id}/edit${origin ? `?origin=${encodeURIComponent(origin)}` : ""}`,
+  tenantPortal: "/tenant-portal",
+  tenantPortalLeases: "/tenant-portal/leases",
+  tenantPortalLeaseDetail: (id: string) => `/tenant-portal/leases/${id}`,
+  tenantPortalInvoices: (params: { leaseId?: string } = {}) =>
+    `/tenant-portal/invoices${toQueryString(params)}`,
+  tenantPortalInvoiceDetail: (id: string) => `/tenant-portal/invoices/${id}`,
+  tenantPortalPayments: "/tenant-portal/payments",
+  tenantPortalProfile: "/tenant-portal/profile",
 };
