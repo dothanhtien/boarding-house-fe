@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import GridShape from "@/components/common/GridShape";
 import Button from "@/components/ui/button/Button";
+import { ROUTES } from "@/config/routeDefinition";
 import { useTheme } from "@/context/ThemeContext";
 import { useLogout } from "@/features/auth/mutations";
 import { useMe } from "@/features/auth/queries";
@@ -73,23 +74,32 @@ const NoWorkspaceAccess: React.FC = () => {
 interface WorkspaceLoadErrorProps {
   onRetry: () => void;
   isRetrying: boolean;
+  onGoToDashboard?: () => void;
 }
 
 const WorkspaceLoadError: React.FC<WorkspaceLoadErrorProps> = ({
   onRetry,
   isRetrying,
+  onGoToDashboard,
 }) => (
   <FullPageMessage
     message="We couldn't load your account. Please try again."
     action={
-      <Button
-        size="sm"
-        variant="outline"
-        disabled={isRetrying}
-        onClick={onRetry}
-      >
-        {isRetrying ? "Retrying..." : "Retry"}
-      </Button>
+      <div className="flex items-center justify-center gap-3">
+        <Button
+          size="sm"
+          variant="outline"
+          disabled={isRetrying}
+          onClick={onRetry}
+        >
+          {isRetrying ? "Retrying..." : "Retry"}
+        </Button>
+        {onGoToDashboard && (
+          <Button size="sm" onClick={onGoToDashboard}>
+            Go to dashboard
+          </Button>
+        )}
+      </div>
     }
   />
 );
@@ -114,9 +124,10 @@ export const WorkspaceGuard: React.FC<WorkspaceGuardProps> = ({
   const setLastWorkspace = useWorkspaceStore((s) => s.setLastWorkspace);
   const tenancyQuery = useTenancy({ enabled: !!user });
 
+  const manage = !!user && canManage(user);
   const access = resolveWorkspaceAccess({
     workspace,
-    canManage: !!user && canManage(user),
+    canManage: manage,
     tenancy: tenancyQuery.data,
     isTenancyLoading: tenancyQuery.isLoading,
     isTenancyError: tenancyQuery.isError && !tenancyQuery.data,
@@ -143,6 +154,9 @@ export const WorkspaceGuard: React.FC<WorkspaceGuardProps> = ({
         <WorkspaceLoadError
           onRetry={() => tenancyQuery.refetch()}
           isRetrying={tenancyQuery.isFetching}
+          onGoToDashboard={
+            manage ? () => router.replace(ROUTES.dashboard) : undefined
+          }
         />
       );
     default:

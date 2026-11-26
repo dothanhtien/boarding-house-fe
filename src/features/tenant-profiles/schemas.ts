@@ -89,7 +89,12 @@ export const tenantProfileSchema = z
         });
       }
     }
-    if (values.identityIssuedDate && values.identityIssuedDate > today()) {
+    const hasIdentityNumber = !!values.identityNumber;
+    if (
+      hasIdentityNumber &&
+      values.identityIssuedDate &&
+      values.identityIssuedDate > today()
+    ) {
       ctx.addIssue({
         code: "custom",
         path: ["identityIssuedDate"],
@@ -97,6 +102,7 @@ export const tenantProfileSchema = z
       });
     }
     if (
+      hasIdentityNumber &&
       values.identityIssuedDate &&
       values.identityExpiryDate &&
       values.identityExpiryDate <= values.identityIssuedDate

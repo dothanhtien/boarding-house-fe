@@ -43,6 +43,8 @@ export const EditMyProfileModal: React.FC<EditMyProfileModalProps> = ({
     control,
     handleSubmit,
     setError,
+    setValue,
+    clearErrors,
     formState: { errors },
   } = useForm<TenantProfileFormValues>({
     resolver: zodResolver(tenantProfileSchema),
@@ -112,9 +114,13 @@ export const EditMyProfileModal: React.FC<EditMyProfileModalProps> = ({
       onClose={handleClose}
       className="m-4 max-w-[720px]"
       closeOnBackdropClick={false}
+      labelledBy="edit-my-profile-title"
     >
       <div className="no-scrollbar relative flex max-h-[90vh] w-full max-w-[720px] flex-col rounded-3xl bg-white p-6 lg:p-8 dark:bg-gray-900">
-        <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
+        <h4
+          id="edit-my-profile-title"
+          className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90"
+        >
           {profile ? "Edit personal information" : "Add personal information"}
         </h4>
         <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">
@@ -163,7 +169,19 @@ export const EditMyProfileModal: React.FC<EditMyProfileModalProps> = ({
                   id="identityNumber"
                   error={!!errors.identityNumber}
                   hint={errors.identityNumber?.message}
-                  {...register("identityNumber")}
+                  {...register("identityNumber", {
+                    onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                      if (e.target.value.trim()) return;
+                      setValue("identityIssuedDate", "");
+                      setValue("identityExpiryDate", "");
+                      setValue("identityIssuedPlace", "");
+                      clearErrors([
+                        "identityIssuedDate",
+                        "identityExpiryDate",
+                        "identityIssuedPlace",
+                      ]);
+                    },
+                  })}
                 />
               </div>
               <div>

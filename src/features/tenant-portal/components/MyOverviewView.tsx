@@ -78,7 +78,14 @@ export const MyOverviewView: React.FC = () => {
       );
     }
     if (unpaidInvoices.length === 0) {
-      return <PortalMessage>You&apos;re all paid up.</PortalMessage>;
+      const hasMorePages = (invoicesQuery.data?.totalPages ?? 0) > 1;
+      return (
+        <PortalMessage>
+          {hasMorePages
+            ? "No unpaid invoices among your recent ones."
+            : "You're all paid up."}
+        </PortalMessage>
+      );
     }
     return (
       <PortalList>
