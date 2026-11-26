@@ -1,7 +1,7 @@
 import React from "react";
 import { formatCurrency } from "@/utils/currency";
 import { DateFormat, formatDate } from "@/utils/date";
-import { InvoiceStatus } from "../constants";
+import { isInvoiceOverdue } from "../utils";
 import { InvoiceDetail } from "../types";
 
 const SummaryItem: React.FC<{
@@ -22,7 +22,7 @@ const SummaryItem: React.FC<{
 export const InvoiceAmountSummary: React.FC<{ invoice: InvoiceDetail }> = ({
   invoice,
 }) => {
-  const isOverdue = invoice.status === InvoiceStatus.Overdue;
+  const isOverdue = isInvoiceOverdue(invoice);
   const overdueClassName = "text-error-500";
 
   return (

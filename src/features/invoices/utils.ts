@@ -35,6 +35,9 @@ const EDITABLE_STATUSES: InvoiceStatus[] = [
 export const isInvoiceEditable = (invoice: Invoice) =>
   invoice.paidAmount === 0 && EDITABLE_STATUSES.includes(invoice.status);
 
+export const isInvoiceOverdue = (invoice: Pick<Invoice, "status">) =>
+  invoice.status === InvoiceStatus.Overdue;
+
 export const isInvoiceCancellable = (invoice: Invoice) =>
   invoice.status !== InvoiceStatus.Cancelled && invoice.paidAmount === 0;
 

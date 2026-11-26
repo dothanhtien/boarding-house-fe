@@ -3,16 +3,24 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ThemeToggleButton } from "@/components/common/ThemeToggleButton";
 import { UserDropdown } from "@/components/header/UserDropdown";
-import { OrganizationSwitcher } from "@/components/header/OrganizationSwitcher";
+import { WorkspaceSwitcher } from "@/components/header/WorkspaceSwitcher";
 import { useSidebar } from "@/context/SidebarContext";
+import { ROUTES } from "@/config/routeDefinition";
 import { useTheme } from "@/context/ThemeContext";
+import {
+  Workspace,
+  getWorkspaceFromPath,
+  getWorkspaceHomePath,
+} from "@/features/auth/workspace";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
   const { theme } = useTheme();
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
+  const workspace = getWorkspaceFromPath(usePathname());
 
   const handleToggle = () => {
     if (window.innerWidth >= 1024) {
@@ -69,10 +77,10 @@ const AppHeader: React.FC = () => {
           </button>
 
           <div className="hidden lg:block">
-            <OrganizationSwitcher />
+            <WorkspaceSwitcher />
           </div>
 
-          <Link href="/" className="lg:hidden">
+          <Link href={getWorkspaceHomePath(workspace)} className="lg:hidden">
             <Image
               width={200}
               height={32}
@@ -112,14 +120,20 @@ const AppHeader: React.FC = () => {
           } shadow-theme-md w-full items-center justify-between gap-4 px-5 py-4 lg:flex lg:justify-end lg:px-0 lg:shadow-none`}
         >
           <div className="lg:hidden">
-            <OrganizationSwitcher />
+            <WorkspaceSwitcher />
           </div>
 
           <div className="2xsm:gap-3 flex items-center gap-2">
             <ThemeToggleButton />
           </div>
 
-          <UserDropdown />
+          <UserDropdown
+            profileHref={
+              workspace === Workspace.Portal
+                ? ROUTES.tenantPortalProfile
+                : ROUTES.profile
+            }
+          />
         </div>
       </div>
     </header>

@@ -7,7 +7,10 @@ import {
 import { ROUTES } from "@/config/routeDefinition";
 import { InvoiceStatus } from "@/features/invoices/constants";
 import type { Invoice } from "@/features/invoices/types";
-import { formatBillingMonth } from "@/features/invoices/utils";
+import {
+  formatBillingMonth,
+  isInvoiceOverdue,
+} from "@/features/invoices/utils";
 import { formatCurrency } from "@/utils/currency";
 import { DateFormat, formatDate } from "@/utils/date";
 import { InvoiceStatusBadge } from "./InvoiceStatusBadge";
@@ -94,9 +97,7 @@ export function InvoicesTable({
       render: (invoice) => (
         <span
           className={
-            invoice.status === InvoiceStatus.Overdue
-              ? "text-error-500 font-medium"
-              : ""
+            isInvoiceOverdue(invoice) ? "text-error-500 font-medium" : ""
           }
         >
           {formatDate(invoice.dueDate, DateFormat.Date)}

@@ -7,10 +7,11 @@ export type LoginPayload = {
 
 export type AuthUser = {
   id: string;
-  email: string;
+  email: string | null;
   emailVerifiedAt: string | null;
   phone: string | null;
   fullName: string;
+  avatarUrl: string | null;
   lastLoginAt: string | null;
   isActive: boolean;
   createdAt: string;

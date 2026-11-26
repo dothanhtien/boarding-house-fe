@@ -3,13 +3,18 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
+import { tenancyQueryOptions } from "@/features/tenant-portal/queries";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import type { ApiError } from "@/lib/axios";
+import { useWorkspaceStore } from "@/store/workspaceStore";
 import { getSafeRedirect } from "@/utils/redirect";
 import { useLogin } from "../mutations";
+import type { AuthUser } from "../types";
+import { getHomePath, needsTenancyForHome } from "../workspace";
 
 export default function SignInForm() {
   const [loginData, setLoginData] = useState({ identifier: "", password: "" });
@@ -18,6 +23,22 @@ export default function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const loginMutation = useLogin();
+  const queryClient = useQueryClient();
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const isSigningIn = loginMutation.isPending || isRedirecting;
+
+  async function resolveHomePath(user: AuthUser) {
+    const { lastWorkspace } = useWorkspaceStore.getState();
+    if (!needsTenancyForHome(user, lastWorkspace)) {
+      return getHomePath(user, null, lastWorkspace);
+    }
+    try {
+      const tenancy = await queryClient.fetchQuery(tenancyQueryOptions);
+      return getHomePath(user, tenancy, lastWorkspace);
+    } catch {
+      return getHomePath(user, null, lastWorkspace);
+    }
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -39,9 +60,15 @@ export default function SignInForm() {
     loginMutation.mutate(
       { identifier, password },
       {
-        onSuccess: () => {
+        onSuccess: async (user) => {
           setLoginData({ identifier: "", password: "" });
-          router.replace(getSafeRedirect(searchParams.get("redirect")));
+          const redirect = searchParams.get("redirect");
+          if (redirect) {
+            router.replace(getSafeRedirect(redirect));
+            return;
+          }
+          setIsRedirecting(true);
+          router.replace(await resolveHomePath(user));
         },
         onError: (error: ApiError) => {
           setError(error.message ?? "An error occurred when signing in");
@@ -118,12 +145,8 @@ export default function SignInForm() {
                   </Link>
                 </div>
                 <div>
-                  <Button
-                    className="w-full"
-                    size="sm"
-                    disabled={loginMutation.isPending}
-                  >
-                    {loginMutation.isPending ? "Signing in..." : "Sign in"}
+                  <Button className="w-full" size="sm" disabled={isSigningIn}>
+                    {isSigningIn ? "Signing in..." : "Sign in"}
                   </Button>
                 </div>
               </div>

@@ -6,7 +6,14 @@ import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import { useTheme } from "../context/ThemeContext";
 import { useAllowedNavItems } from "@/hooks/useAllowedNavItems";
-import { type NavItem } from "@/components/sidebar/navItems";
+import {
+  getWorkspaceFromPath,
+  getWorkspaceHomePath,
+} from "@/features/auth/workspace";
+import {
+  type NavItem,
+  WORKSPACE_HOME_PATHS,
+} from "@/components/sidebar/navItems";
 import { SidebarNavItem } from "@/components/sidebar/SidebarNavItem";
 import { HorizontaLDots } from "../icons";
 
@@ -58,8 +65,8 @@ const AppSidebar: React.FC = () => {
 
   const isActive = useCallback(
     (path: string) =>
-      path === "/"
-        ? pathname === "/"
+      WORKSPACE_HOME_PATHS.includes(path)
+        ? pathname === path
         : pathname === path || pathname.startsWith(`${path}/`),
     [pathname],
   );
@@ -128,7 +135,7 @@ const AppSidebar: React.FC = () => {
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
-        <Link href="/">
+        <Link href={getWorkspaceHomePath(getWorkspaceFromPath(pathname))}>
           {isExpanded || isHovered || isMobileOpen ? (
             <Image
               src={

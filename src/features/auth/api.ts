@@ -1,4 +1,5 @@
 import { api } from "@/lib/axios";
+import { multipartConfig, toFormData } from "@/utils/multipart";
 import type { LoginPayload, LoginResponse } from "./types";
 
 export const authApi = {
@@ -14,5 +15,17 @@ export const authApi = {
 
   async logout(): Promise<void> {
     await api.post("/auth/logout");
+  },
+
+  async updateMyAvatar(file: File): Promise<void> {
+    await api.put(
+      "/auth/me/avatar",
+      toFormData({ file: [file] }),
+      multipartConfig(),
+    );
+  },
+
+  async deleteMyAvatar(): Promise<void> {
+    await api.delete("/auth/me/avatar");
   },
 };
